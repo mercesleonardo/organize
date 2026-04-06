@@ -275,7 +275,8 @@ new #[Title('Receitas')] class extends Component {
         @include('pages.finance.partials.period-summary', ['summary' => $this->summary])
 
         <div class="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-            <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+            {{-- Desktop table --}}
+            <table class="hidden min-w-full divide-y divide-zinc-200 dark:divide-zinc-700 md:table">
                 <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                     <tr>
                         <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Data') }}</th>
@@ -338,6 +339,70 @@ new #[Title('Receitas')] class extends Component {
                     @endforelse
                 </tbody>
             </table>
+
+            {{-- Mobile cards --}}
+            <div class="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800 md:hidden">
+                @forelse ($this->transactions as $transaction)
+                    <div wire:key="inc-mobile-{{ $transaction->id }}" class="p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                    {{ $transaction->description }}
+                                </div>
+                                <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                                    {{ $transaction->date->format('d/m/Y') }}
+                                    <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
+                                    {{ $transaction->category?->name ?? '—' }}
+                                    <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
+                                    {{ __('Parcela') }} {{ $transaction->installment_number }}/{{ $transaction->total_installments }}
+                                </div>
+                                <div class="mt-2 flex items-center gap-2">
+                                    <flux:badge
+                                        size="sm"
+                                        inset="top bottom"
+                                        :color="$transaction->status === \App\Enums\TransactionStatus::Paid ? 'green' : 'amber'"
+                                    >
+                                        {{ $transaction->status->label(\App\Enums\TransactionType::Income) }}
+                                    </flux:badge>
+                                    <span class="text-sm font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                                        {{ number_format((float) $transaction->amount, 2, ',', '.') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap justify-end gap-2">
+                            @if ($transaction->status === \App\Enums\TransactionStatus::Pending)
+                                <flux:button size="sm" variant="primary" wire:click="markAsReceived({{ $transaction->id }})">
+                                    {{ __('Marcar como recebido') }}
+                                </flux:button>
+                            @endif
+
+                            <flux:dropdown position="bottom" align="end">
+                                <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Ações')" />
+
+                                <flux:menu>
+                                    <flux:menu.item icon="pencil" wire:click="openEdit({{ $transaction->id }})">
+                                        {{ __('Editar') }}
+                                    </flux:menu.item>
+                                    <flux:menu.separator />
+                                    <flux:menu.item
+                                        icon="trash"
+                                        wire:click="delete({{ $transaction->id }})"
+                                        wire:confirm="{{ __('Excluir esta receita? Se for a parcela mestre, as demais parcelas também serão removidas.') }}"
+                                    >
+                                        {{ __('Excluir') }}
+                                    </flux:menu.item>
+                                </flux:menu>
+                            </flux:dropdown>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-sm text-zinc-500">
+                        {{ __('Nenhuma receita neste período.') }}
+                    </div>
+                @endforelse
+            </div>
         </div>
 
         @if ($this->transactions->hasPages())

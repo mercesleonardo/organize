@@ -121,7 +121,8 @@ new #[Title('Categorias')] class extends Component {
         </div>
 
         <div class="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
-            <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
+            {{-- Desktop table --}}
+            <table class="hidden min-w-full divide-y divide-zinc-200 dark:divide-zinc-700 md:table">
                 <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                     <tr>
                         <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Nome') }}</th>
@@ -168,6 +169,54 @@ new #[Title('Categorias')] class extends Component {
                     @endforelse
                 </tbody>
             </table>
+
+            {{-- Mobile cards --}}
+            <div class="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800 md:hidden">
+                @forelse ($this->categories as $category)
+                    <div wire:key="category-mobile-{{ $category->id }}" class="p-4">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="min-w-0">
+                                <div class="flex items-center gap-2">
+                                    @if ($category->color)
+                                        <span class="mt-1 size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
+                                    @endif
+                                    <div class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                        {{ $category->name }}
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <flux:badge size="sm" inset="top bottom">
+                                        {{ $category->type->label() }}
+                                    </flux:badge>
+                                </div>
+                            </div>
+                            <div class="flex shrink-0 items-center gap-2">
+                                <flux:dropdown position="bottom" align="end">
+                                    <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Ações')" />
+
+                                    <flux:menu>
+                                        <flux:menu.item icon="pencil" wire:click="openEdit({{ $category->id }})">
+                                            {{ __('Editar') }}
+                                        </flux:menu.item>
+                                        <flux:menu.separator />
+                                        <flux:menu.item
+                                            icon="trash"
+                                            wire:click="delete({{ $category->id }})"
+                                            wire:confirm="{{ __('Excluir esta categoria? Transações vinculadas serão removidas.') }}"
+                                        >
+                                            {{ __('Excluir') }}
+                                        </flux:menu.item>
+                                    </flux:menu>
+                                </flux:dropdown>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="p-8 text-center text-sm text-zinc-500">
+                        {{ __('Nenhuma categoria ainda.') }}
+                    </div>
+                @endforelse
+            </div>
         </div>
     </div>
 

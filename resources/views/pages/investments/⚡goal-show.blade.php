@@ -210,7 +210,7 @@ new #[Title('Investment goal')] class extends Component {
     }
 }; ?>
 
-<div class="mx-auto max-w-6xl p-6">
+<div class="mx-auto w-full max-w-6xl overflow-x-clip px-4 py-6 sm:px-6">
     <div class="mb-6 flex flex-wrap items-start justify-between gap-3">
         <div class="min-w-0">
             <flux:button variant="ghost" :href="route('investments.goals.index')" icon="arrow-left" wire:navigate>
@@ -245,37 +245,65 @@ new #[Title('Investment goal')] class extends Component {
                 {{ $s['remaining'] <= 0 ? __('Done') : __('In progress') }}
             </flux:badge>
 
-            <flux:button variant="ghost" size="sm" icon="pencil" wire:click="openEditGoal">
-                {{ __('Edit') }}
-            </flux:button>
-            <flux:button
-                variant="danger"
-                size="sm"
-                icon="trash"
-                wire:click="deleteGoal"
-                wire:confirm="{{ __('Delete this goal?') }}"
-            >
-                {{ __('Delete') }}
-            </flux:button>
+            {{-- Desktop actions --}}
+            <div class="hidden items-center gap-2 md:flex">
+                <flux:button variant="ghost" size="sm" icon="pencil" wire:click="openEditGoal">
+                    {{ __('Edit') }}
+                </flux:button>
+                <flux:button
+                    variant="danger"
+                    size="sm"
+                    icon="trash"
+                    wire:click="deleteGoal"
+                    wire:confirm="{{ __('Delete this goal?') }}"
+                >
+                    {{ __('Delete') }}
+                </flux:button>
+            </div>
+
+            {{-- Mobile actions --}}
+            <div class="md:hidden">
+                <flux:dropdown position="bottom" align="end">
+                    <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Actions')" />
+
+                    <flux:menu>
+                        <flux:menu.item icon="pencil" wire:click="openEditGoal">
+                            {{ __('Edit') }}
+                        </flux:menu.item>
+                        <flux:menu.separator />
+                        <flux:menu.item
+                            icon="trash"
+                            wire:click="deleteGoal"
+                            wire:confirm="{{ __('Delete this goal?') }}"
+                        >
+                            {{ __('Delete') }}
+                        </flux:menu.item>
+                    </flux:menu>
+                </flux:dropdown>
+            </div>
         </div>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-5">
         <div class="space-y-6 lg:col-span-3">
             <div class="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
-                <div class="flex items-start justify-between gap-6">
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
                     <div class="min-w-0">
                         <flux:heading size="lg">{{ __('Progress') }}</flux:heading>
                         <flux:text class="mt-2 text-sm">
-                            {{ __('Contributed') }}:
-                            <span class="font-medium tabular-nums text-zinc-900 dark:text-white">{{ number_format($s['contributed'], 2, ',', '.') }}</span>
-                            <span class="mx-2 text-zinc-300 dark:text-zinc-700">•</span>
-                            {{ __('Remaining') }}:
-                            <span class="font-medium tabular-nums text-zinc-900 dark:text-white">{{ number_format($s['remaining'], 2, ',', '.') }}</span>
+                            <span class="block sm:inline">
+                                {{ __('Contributed') }}:
+                                <span class="font-medium tabular-nums text-zinc-900 dark:text-white">{{ number_format($s['contributed'], 2, ',', '.') }}</span>
+                            </span>
+                            <span class="hidden sm:mx-2 sm:inline text-zinc-300 dark:text-zinc-700">•</span>
+                            <span class="mt-1 block sm:mt-0 sm:inline">
+                                {{ __('Remaining') }}:
+                                <span class="font-medium tabular-nums text-zinc-900 dark:text-white">{{ number_format($s['remaining'], 2, ',', '.') }}</span>
+                            </span>
                         </flux:text>
                     </div>
 
-                    <div class="text-end">
+                    <div class="text-start sm:text-end">
                         <div class="text-sm font-medium tabular-nums text-zinc-900 dark:text-white">{{ number_format($s['percent'], 0) }}%</div>
                         <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{{ __('of target') }}</div>
                     </div>
@@ -349,7 +377,8 @@ new #[Title('Investment goal')] class extends Component {
                     </div>
                 </form>
 
-                <div class="mt-6 overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+                {{-- Desktop table --}}
+                <div class="mt-6 hidden overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700 md:block">
                     <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
                         <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                             <tr>
@@ -372,17 +401,39 @@ new #[Title('Investment goal')] class extends Component {
                                         {{ number_format((float) $c->amount, 2, ',', '.') }}
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3 text-end text-sm">
-                                        <flux:button size="sm" variant="ghost" wire:click="openEditContribution({{ $c->id }})">
-                                            {{ __('Edit') }}
-                                        </flux:button>
-                                        <flux:button
-                                            size="sm"
-                                            variant="danger"
-                                            wire:click="deleteContribution({{ $c->id }})"
-                                            wire:confirm="{{ __('Delete this contribution?') }}"
-                                        >
-                                            {{ __('Delete') }}
-                                        </flux:button>
+                                        <div class="hidden items-center justify-end gap-2 md:flex">
+                                            <flux:button size="sm" variant="ghost" wire:click="openEditContribution({{ $c->id }})">
+                                                {{ __('Edit') }}
+                                            </flux:button>
+                                            <flux:button
+                                                size="sm"
+                                                variant="danger"
+                                                wire:click="deleteContribution({{ $c->id }})"
+                                                wire:confirm="{{ __('Delete this contribution?') }}"
+                                            >
+                                                {{ __('Delete') }}
+                                            </flux:button>
+                                        </div>
+
+                                        <div class="flex justify-end md:hidden">
+                                            <flux:dropdown position="bottom" align="end">
+                                                <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Actions')" />
+
+                                                <flux:menu>
+                                                    <flux:menu.item icon="pencil" wire:click="openEditContribution({{ $c->id }})">
+                                                        {{ __('Edit') }}
+                                                    </flux:menu.item>
+                                                    <flux:menu.separator />
+                                                    <flux:menu.item
+                                                        icon="trash"
+                                                        wire:click="deleteContribution({{ $c->id }})"
+                                                        wire:confirm="{{ __('Delete this contribution?') }}"
+                                                    >
+                                                        {{ __('Delete') }}
+                                                    </flux:menu.item>
+                                                </flux:menu>
+                                            </flux:dropdown>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -394,6 +445,52 @@ new #[Title('Investment goal')] class extends Component {
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                {{-- Mobile cards --}}
+                <div class="mt-6 divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-white dark:divide-zinc-700 dark:border-zinc-700 dark:bg-zinc-800 md:hidden">
+                    @forelse ($this->contributions as $c)
+                        <div wire:key="contrib-mobile-{{ $c->id }}" class="p-4">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
+                                        {{ number_format((float) $c->amount, 2, ',', '.') }}
+                                    </div>
+                                    <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+                                        {{ $c->date->format('d/m/Y') }}
+                                        @if ($c->note)
+                                            <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
+                                            <span class="break-words">{{ $c->note }}</span>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <div class="shrink-0">
+                                    <flux:dropdown position="bottom" align="end">
+                                        <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Actions')" />
+
+                                        <flux:menu>
+                                            <flux:menu.item icon="pencil" wire:click="openEditContribution({{ $c->id }})">
+                                                {{ __('Edit') }}
+                                            </flux:menu.item>
+                                            <flux:menu.separator />
+                                            <flux:menu.item
+                                                icon="trash"
+                                                wire:click="deleteContribution({{ $c->id }})"
+                                                wire:confirm="{{ __('Delete this contribution?') }}"
+                                            >
+                                                {{ __('Delete') }}
+                                            </flux:menu.item>
+                                        </flux:menu>
+                                    </flux:dropdown>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="p-8 text-center text-sm text-zinc-500">
+                            {{ __('No contributions yet.') }}
+                        </div>
+                    @endforelse
                 </div>
 
                 @if ($this->contributions->hasPages())
