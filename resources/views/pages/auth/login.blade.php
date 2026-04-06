@@ -1,6 +1,13 @@
-<x-layouts::auth :title="__('Log in')">
+<x-layouts::auth.modern-split
+    :title="__('Log in')"
+    :marketing-title="__('Welcome back!')"
+    :marketing-subtitle="__('Pick up right where you left off — your finances, organized.')"
+>
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+        <div class="text-center">
+            <flux:heading size="xl">{{ __('Log in to your account') }}</flux:heading>
+            <flux:subheading>{{ __('Enter your email and password below to log in') }}</flux:subheading>
+        </div>
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
@@ -18,6 +25,7 @@
                 autofocus
                 autocomplete="email"
                 placeholder="email@example.com"
+                icon:leading="envelope"
             />
 
             <!-- Password -->
@@ -30,17 +38,20 @@
                     autocomplete="current-password"
                     :placeholder="__('Password')"
                     viewable
+                    icon:leading="lock-closed"
                 />
 
                 @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
+                    <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
                         {{ __('Forgot your password?') }}
                     </flux:link>
                 @endif
             </div>
 
             <!-- Remember Me -->
-            <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
+            <div class="flex items-center justify-between gap-3">
+                <flux:checkbox name="remember" :label="__('Remember me')" :checked="old('remember')" />
+            </div>
 
             <div class="flex items-center justify-end">
                 <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
@@ -56,4 +67,4 @@
             </div>
         @endif
     </div>
-</x-layouts::auth>
+</x-layouts::auth.modern-split>

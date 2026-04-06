@@ -1,4 +1,8 @@
-<x-layouts::auth :title="__('Two-factor authentication')">
+<x-layouts::auth.modern-split
+    :title="__('Two-factor authentication')"
+    :marketing-title="__('Extra protection.')"
+    :marketing-subtitle="__('Use your authenticator app or a recovery code to continue.')"
+>
     <div class="flex flex-col gap-6">
         <div
             class="relative w-full h-auto"
@@ -24,17 +28,17 @@
             }"
         >
             <div x-show="!showRecoveryInput">
-                <x-auth-header
-                    :title="__('Authentication code')"
-                    :description="__('Enter the authentication code provided by your authenticator application.')"
-                />
+                <div class="text-center">
+                    <flux:heading size="xl">{{ __('Authentication code') }}</flux:heading>
+                    <flux:subheading>{{ __('Enter the authentication code provided by your authenticator application.') }}</flux:subheading>
+                </div>
             </div>
 
             <div x-show="showRecoveryInput">
-                <x-auth-header
-                    :title="__('Recovery code')"
-                    :description="__('Please confirm access to your account by entering one of your emergency recovery codes.')"
-                />
+                <div class="text-center">
+                    <flux:heading size="xl">{{ __('Recovery code') }}</flux:heading>
+                    <flux:subheading>{{ __('Please confirm access to your account by entering one of your emergency recovery codes.') }}</flux:subheading>
+                </div>
             </div>
 
             <form method="POST" action="{{ route('two-factor.login.store') }}">
@@ -63,6 +67,7 @@
                                 x-bind:required="showRecoveryInput"
                                 autocomplete="one-time-code"
                                 x-model="recovery_code"
+                                icon:leading="key"
                             />
                         </div>
 
@@ -92,4 +97,4 @@
             </form>
         </div>
     </div>
-</x-layouts::auth>
+</x-layouts::auth.modern-split>

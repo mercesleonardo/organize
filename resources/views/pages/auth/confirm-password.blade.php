@@ -1,9 +1,13 @@
-<x-layouts::auth :title="__('Confirm password')">
+<x-layouts::auth.modern-split
+    :title="__('Confirm password')"
+    :marketing-title="__('Security check.')"
+    :marketing-subtitle="__('Confirm your password to continue.')"
+>
     <div class="flex flex-col gap-6">
-        <x-auth-header
-            :title="__('Confirm password')"
-            :description="__('This is a secure area of the application. Please confirm your password before continuing.')"
-        />
+        <div class="text-center">
+            <flux:heading size="xl">{{ __('Confirm password') }}</flux:heading>
+            <flux:subheading>{{ __('This is a secure area of the application. Please confirm your password before continuing.') }}</flux:subheading>
+        </div>
 
         <x-auth-session-status class="text-center" :status="session('status')" />
 
@@ -18,6 +22,7 @@
                 autocomplete="current-password"
                 :placeholder="__('Password')"
                 viewable
+                icon:leading="lock-closed"
             />
 
             <flux:button variant="primary" type="submit" class="w-full" data-test="confirm-password-button">
@@ -25,4 +30,4 @@
             </flux:button>
         </form>
     </div>
-</x-layouts::auth>
+</x-layouts::auth.modern-split>

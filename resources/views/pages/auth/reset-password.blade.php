@@ -1,6 +1,13 @@
-<x-layouts::auth :title="__('Reset password')">
+<x-layouts::auth.modern-split
+    :title="__('Reset password')"
+    :marketing-title="__('Set a new password.')"
+    :marketing-subtitle="__('Choose a strong password to keep your account protected.')"
+>
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Reset password')" :description="__('Please enter your new password below')" />
+        <div class="text-center">
+            <flux:heading size="xl">{{ __('Reset password') }}</flux:heading>
+            <flux:subheading>{{ __('Please enter your new password below') }}</flux:subheading>
+        </div>
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
@@ -18,6 +25,7 @@
                 type="email"
                 required
                 autocomplete="email"
+                icon:leading="envelope"
             />
 
             <!-- Password -->
@@ -29,6 +37,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
+                icon:leading="lock-closed"
             />
 
             <!-- Confirm Password -->
@@ -40,6 +49,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
+                icon:leading="lock-closed"
             />
 
             <div class="flex items-center justify-end">
@@ -49,4 +59,4 @@
             </div>
         </form>
     </div>
-</x-layouts::auth>
+</x-layouts::auth.modern-split>

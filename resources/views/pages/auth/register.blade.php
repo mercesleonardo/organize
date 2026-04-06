@@ -1,6 +1,13 @@
-<x-layouts::auth :title="__('Register')">
+<x-layouts::auth.modern-split
+    :title="__('Register')"
+    :marketing-title="__('Start your financial journey.')"
+    :marketing-subtitle="__('Create your account and take control with a clean, green experience.')"
+>
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+        <div class="text-center">
+            <flux:heading size="xl">{{ __('Create an account') }}</flux:heading>
+            <flux:subheading>{{ __('Enter your details below to create your account') }}</flux:subheading>
+        </div>
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
@@ -17,6 +24,7 @@
                 autofocus
                 autocomplete="name"
                 :placeholder="__('Full name')"
+                icon:leading="user"
             />
 
             <!-- Email Address -->
@@ -28,6 +36,7 @@
                 required
                 autocomplete="email"
                 placeholder="email@example.com"
+                icon:leading="envelope"
             />
 
             <!-- Password -->
@@ -39,6 +48,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Password')"
                 viewable
+                icon:leading="lock-closed"
             />
 
             <!-- Confirm Password -->
@@ -50,6 +60,7 @@
                 autocomplete="new-password"
                 :placeholder="__('Confirm password')"
                 viewable
+                icon:leading="lock-closed"
             />
 
             <div class="flex items-center justify-end">
@@ -64,4 +75,4 @@
             <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
         </div>
     </div>
-</x-layouts::auth>
+</x-layouts::auth.modern-split>
