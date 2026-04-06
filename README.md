@@ -1,6 +1,6 @@
 # Organize
 
-Aplicação web de **gestão de finanças pessoais** construída com Laravel e Livewire. Permite registar receitas e despesas, categorizar lançamentos, acompanhar períodos (dia a ano), gerar parcelas automaticamente e visualizar resumos por mês — com regras de negócio para manter despesas “pagas” alinhadas ao saldo disponível.
+Aplicação web de **gestão de finanças pessoais** construída com Laravel e Livewire. Permite registar receitas e despesas, categorizar lançamentos, acompanhar períodos (dia a ano), gerar parcelas automaticamente e visualizar resumos por mês — com regras de negócio para manter despesas “pagas” alinhadas ao saldo disponível. Inclui **metas de investimento** (aportes ao longo do tempo) à parte do saldo de caixa.
 
 ## Stack
 
@@ -19,6 +19,7 @@ Aplicação web de **gestão de finanças pessoais** construída com Laravel e L
 - **Estados** (pago / pendente) com marcação rápida na listagem
 - **Resumos por período** e filtros por mês
 - **Saldo para despesas pagas**: marcar ou criar despesa como paga só é permitido com saldo suficiente (receitas recebidas − despesas pagas, visão global)
+- **Investimentos (metas)**: criar objetivos com valor alvo, data de início e prazo opcional; registar **aportes** com data e nota; acompanhar progresso (percentual, valor faltante, valor esperado até a data atual com prazo definido); **sugestão de aporte mensal** com base no que falta e nos meses restantes; indicadores **adiantado / atrasado** (quando há prazo) e CRUD de metas e aportes. **Não altera** o saldo principal da aplicação (receitas/despesas)
 - Interface em **português (Brasil)** com pacote de localização `lucascudo/laravel-pt-br-localization`
 - **Landing page** pública na rota `/` e área autenticada com layout Flux
 
@@ -76,11 +77,13 @@ vendor/bin/pint --dirty
 
 ## Estrutura útil
 
-- `routes/web.php` — rotas web (início, dashboard, finanças, definições)
+- `routes/web.php` — rotas web (início, dashboard, finanças, **investimentos** `/investments`, definições)
 - `resources/views/pages/` — páginas Livewire (ficheiros `⚡*.blade.php`)
+- `resources/views/pages/investments/` — listagem e detalhe de metas de investimento
+- `app/Models/InvestmentGoal.php`, `app/Models/InvestmentContribution.php` — metas e aportes
 - `app/Actions/` — ações de domínio (ex.: criação de transações e parcelas)
 - `app/Support/FinancePeriodSummary.php` — agregados por período
-- `tests/Feature/` — testes de funcionalidade e fluxos HTTP/Livewire
+- `tests/Feature/` — testes de funcionalidade e fluxos HTTP/Livewire (`tests/Feature/Investments/InvestmentGoalsTest.php`)
 
 ## Licença
 
