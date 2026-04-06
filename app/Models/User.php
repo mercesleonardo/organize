@@ -61,4 +61,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class);
     }
+
+    /**
+     * @return HasMany<InvestmentGoal, $this>
+     */
+    public function investmentGoals(): HasMany
+    {
+        return $this->hasMany(InvestmentGoal::class);
+    }
+
+    /**
+     * @return HasMany<InvestmentContribution, $this>
+     */
+    public function investmentContributions(): HasMany
+    {
+        return $this->hasMany(InvestmentContribution::class);
+    }
 }
