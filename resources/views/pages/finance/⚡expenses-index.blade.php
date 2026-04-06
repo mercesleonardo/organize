@@ -404,29 +404,23 @@ new #[Title('Despesas')] class extends Component {
                                 </flux:button>
                             @endif
 
-                            <flux:dropdown position="bottom" align="end">
-                                <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Ações')" />
-
-                                <flux:menu>
-                                    <flux:menu.item icon="pencil" wire:click="openEdit({{ $transaction->id }})">
-                                        {{ __('Editar') }}
-                                    </flux:menu.item>
-                                    <flux:menu.separator />
-                                    <flux:menu.item
-                                        icon="trash"
-                                        wire:click="delete({{ $transaction->id }})"
-                                        wire:confirm="{{ __('Excluir esta despesa? Se for a parcela mestre, as demais parcelas também serão removidas.') }}"
-                                    >
-                                        {{ __('Excluir') }}
-                                    </flux:menu.item>
-                                </flux:menu>
-                            </flux:dropdown>
+                            <x-action-dropdown :title="__('Ações')">
+                                <flux:menu.item icon="pencil" wire:click="openEdit({{ $transaction->id }})">
+                                    {{ __('Editar') }}
+                                </flux:menu.item>
+                                <flux:menu.separator />
+                                <flux:menu.item
+                                    icon="trash"
+                                    wire:click="delete({{ $transaction->id }})"
+                                    wire:confirm="{{ __('Excluir esta despesa? Se for a parcela mestre, as demais parcelas também serão removidas.') }}"
+                                >
+                                    {{ __('Excluir') }}
+                                </flux:menu.item>
+                            </x-action-dropdown>
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-sm text-zinc-500">
-                        {{ __('Nenhuma despesa neste período.') }}
-                    </div>
+                    <x-empty-state :message="__('Nenhuma despesa neste período.')" />
                 @endforelse
             </div>
         </div>

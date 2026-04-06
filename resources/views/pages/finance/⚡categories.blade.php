@@ -191,30 +191,24 @@ new #[Title('Categorias')] class extends Component {
                                 </div>
                             </div>
                             <div class="flex shrink-0 items-center gap-2">
-                                <flux:dropdown position="bottom" align="end">
-                                    <flux:button size="sm" variant="ghost" icon="ellipsis-vertical" square :title="__('Ações')" />
-
-                                    <flux:menu>
-                                        <flux:menu.item icon="pencil" wire:click="openEdit({{ $category->id }})">
-                                            {{ __('Editar') }}
-                                        </flux:menu.item>
-                                        <flux:menu.separator />
-                                        <flux:menu.item
-                                            icon="trash"
-                                            wire:click="delete({{ $category->id }})"
-                                            wire:confirm="{{ __('Excluir esta categoria? Transações vinculadas serão removidas.') }}"
-                                        >
-                                            {{ __('Excluir') }}
-                                        </flux:menu.item>
-                                    </flux:menu>
-                                </flux:dropdown>
+                                <x-action-dropdown :title="__('Ações')">
+                                    <flux:menu.item icon="pencil" wire:click="openEdit({{ $category->id }})">
+                                        {{ __('Editar') }}
+                                    </flux:menu.item>
+                                    <flux:menu.separator />
+                                    <flux:menu.item
+                                        icon="trash"
+                                        wire:click="delete({{ $category->id }})"
+                                        wire:confirm="{{ __('Excluir esta categoria? Transações vinculadas serão removidas.') }}"
+                                    >
+                                        {{ __('Excluir') }}
+                                    </flux:menu.item>
+                                </x-action-dropdown>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-sm text-zinc-500">
-                        {{ __('Nenhuma categoria ainda.') }}
-                    </div>
+                    <x-empty-state :message="__('Nenhuma categoria ainda.')" />
                 @endforelse
             </div>
         </div>

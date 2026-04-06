@@ -487,9 +487,7 @@ new #[Title('Investment goal')] class extends Component {
                             </div>
                         </div>
                     @empty
-                        <div class="p-8 text-center text-sm text-zinc-500">
-                            {{ __('No contributions yet.') }}
-                        </div>
+                        <x-empty-state :message="__('No contributions yet.')" />
                     @endforelse
                 </div>
 
