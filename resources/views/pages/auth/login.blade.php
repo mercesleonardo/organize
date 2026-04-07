@@ -60,6 +60,25 @@
             </div>
         </form>
 
+        <div class="relative">
+            <div class="absolute inset-0 flex items-center" aria-hidden="true">
+                <div class="w-full border-t border-zinc-200 dark:border-zinc-800"></div>
+            </div>
+            <div class="relative flex justify-center text-xs uppercase">
+                <span class="bg-white px-2 text-zinc-500 dark:bg-zinc-900/40 dark:text-zinc-400">
+                    {{ __('Or continue with') }}
+                </span>
+            </div>
+        </div>
+
+        <flux:button
+            variant="outline"
+            :href="route('auth.google.redirect')"
+            class="w-full"
+        >
+            {{ __('Continue with Google') }}
+        </flux:button>
+
         @if (Route::has('register'))
             <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">
                 <span>{{ __('Don\'t have an account?') }}</span>
