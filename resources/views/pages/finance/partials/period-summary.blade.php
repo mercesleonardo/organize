@@ -11,6 +11,7 @@
         :value="$fmt($exp['total'])"
         :rows="[
             ['label' => __('Pagas'), 'value' => $fmt($exp['paid']), 'class' => 'text-emerald-600 dark:text-emerald-400'],
+            ['label' => __('Investimentos'), 'value' => $fmt($exp['investmentsPaid'] ?? 0), 'class' => 'text-emerald-700 dark:text-emerald-400'],
             ['label' => __('Pendentes'), 'value' => $fmt($exp['pending']), 'class' => 'text-amber-600 dark:text-amber-400'],
         ]"
     />
@@ -28,6 +29,6 @@
         :title="__('Saldo (recebidas − pagas)')"
         :value="$fmt($net)"
         :value-class="$net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'"
-        :note="__('Apenas receitas recebidas e despesas pagas no período.')"
+        :note="__('Apenas receitas recebidas e despesas pagas no período (inclui débitos de investimentos).')"
     />
 </div>

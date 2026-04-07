@@ -113,7 +113,7 @@ new #[Title('Dashboard')] class extends Component {
 
         @include('pages.finance.partials.period-summary', ['summary' => $this->summary])
 
-        <div class="grid gap-4 md:grid-cols-2">
+        <div class="grid gap-4 md:grid-cols-3">
             <a
                 href="{{ route('finance.expenses.index') }}"
                 wire:navigate
@@ -135,6 +135,17 @@ new #[Title('Dashboard')] class extends Component {
                     {{ 'R$ '.number_format($this->summary['incomes']['pending'], 2, ',', '.') }}
                 </p>
                 <flux:text class="mt-2 text-sm">{{ __('Abrir receitas') }} →</flux:text>
+            </a>
+            <a
+                href="{{ route('investments.goals.index') }}"
+                wire:navigate
+                class="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600"
+            >
+                <flux:heading size="sm" class="text-zinc-500">{{ __('Total investido') }}</flux:heading>
+                <p class="mt-2 text-2xl font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
+                    {{ 'R$ '.number_format($this->summary['expenses']['investmentsPaid'] ?? 0, 2, ',', '.') }}
+                </p>
+                <flux:text class="mt-2 text-sm">{{ __('Abrir investimentos') }} →</flux:text>
             </a>
         </div>
 

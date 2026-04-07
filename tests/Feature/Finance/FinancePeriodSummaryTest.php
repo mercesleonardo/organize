@@ -79,6 +79,41 @@ test('saldo usa receitas recebidas e despesas pagas', function () {
     expect($net)->toBe(300.0);
 });
 
+test('resumo mostra subtotal de débitos de investimentos nas despesas pagas', function () {
+    $user             = User::factory()->create();
+    $catIncome        = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $catInvestExpense = Category::factory()->create([
+        'user_id' => $user->id,
+        'type'    => TransactionType::Expense,
+        'name'    => 'Investments',
+    ]);
+
+    Transaction::factory()->create([
+        'user_id'     => $user->id,
+        'category_id' => $catIncome->id,
+        'amount'      => '500.00',
+        'date'        => '2026-06-15',
+        'type'        => TransactionType::Income,
+        'status'      => TransactionStatus::Paid,
+    ]);
+
+    Transaction::factory()->create([
+        'user_id'     => $user->id,
+        'category_id' => $catInvestExpense->id,
+        'description' => 'Investment contribution: Buy a house',
+        'amount'      => '200.00',
+        'date'        => '2026-06-20',
+        'type'        => TransactionType::Expense,
+        'status'      => TransactionStatus::Paid,
+    ]);
+
+    $summary = FinancePeriodSummary::forPeriod($user, '2026-06');
+
+    expect($summary['expenses']['paid'])->toBe(200.0)
+        ->and($summary['expenses']['investmentsPaid'])->toBe(200.0)
+        ->and($summary['net'])->toBe(300.0);
+});
+
 test('saldo ignora despesas pendentes', function () {
     $user       = User::factory()->create();
     $catExpense = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);

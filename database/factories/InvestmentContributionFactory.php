@@ -30,9 +30,10 @@ class InvestmentContributionFactory extends Factory
 
                 return $goal?->user_id ?? User::factory();
             },
-            'amount' => fake()->randomFloat(2, 10, 5000),
-            'date'   => fake()->date(),
-            'note'   => fake()->optional()->sentence(),
+            'debit_transaction_id' => null,
+            'amount'               => fake()->randomFloat(2, 10, 5000),
+            'date'                 => fake()->date(),
+            'note'                 => fake()->optional()->sentence(),
         ];
     }
 }

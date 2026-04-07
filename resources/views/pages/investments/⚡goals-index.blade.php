@@ -170,6 +170,7 @@ new #[Title('Investments')] class extends Component {
             <div>
                 <flux:heading size="lg">{{ __('New investment goal') }}</flux:heading>
                 <flux:text class="mt-2">{{ __('Goals are separate from your income and expenses.') }}</flux:text>
+                <flux:text class="mt-2">{{ __('Contributions are recorded as paid expenses to debit your available balance.') }}</flux:text>
             </div>
 
             <flux:field>

@@ -2,10 +2,15 @@
 
 use App\Http\Requests\StoreInvestmentContributionRequest;
 use App\Http\Requests\UpdateInvestmentGoalRequest;
+use App\Models\Category;
 use App\Models\InvestmentContribution;
 use App\Models\InvestmentGoal;
+use App\Models\Transaction;
+use App\Support\ExpensePaidBalance;
+use App\Enums\{TransactionStatus, TransactionType};
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -133,13 +138,52 @@ new #[Title('Investment goal')] class extends Component {
 
         $this->validate((new StoreInvestmentContributionRequest())->rules());
 
-        InvestmentContribution::query()->create([
-            'investment_goal_id' => $this->goal->id,
-            'user_id' => Auth::id(),
-            'amount' => number_format((float) $this->amount, 2, '.', ''),
-            'date' => $this->date,
-            'note' => filled($this->note) ? $this->note : null,
-        ]);
+        $user = Auth::user();
+        $amount = number_format((float) $this->amount, 2, '.', '');
+
+        ExpensePaidBalance::assertCanSetExpensePaid(
+            $user,
+            TransactionStatus::Paid,
+            (float) $amount,
+            null,
+            'amount',
+        );
+
+        DB::transaction(function () use ($user, $amount): void {
+            $category = Category::query()->firstOrCreate(
+                [
+                    'user_id' => $user->id,
+                    'type' => TransactionType::Expense,
+                    'name' => __('Investments'),
+                ],
+                [
+                    'icon' => 'banknotes',
+                    'color' => 'emerald',
+                ],
+            );
+
+            $debit = Transaction::query()->create([
+                'user_id' => $user->id,
+                'category_id' => $category->id,
+                'description' => __('Investment contribution: :goal', ['goal' => $this->goal->name]),
+                'amount' => $amount,
+                'date' => $this->date,
+                'type' => TransactionType::Expense,
+                'status' => TransactionStatus::Paid,
+                'installment_number' => 1,
+                'total_installments' => 1,
+                'parent_id' => null,
+            ]);
+
+            InvestmentContribution::query()->create([
+                'investment_goal_id' => $this->goal->id,
+                'user_id' => $user->id,
+                'debit_transaction_id' => $debit->id,
+                'amount' => $amount,
+                'date' => $this->date,
+                'note' => filled($this->note) ? $this->note : null,
+            ]);
+        });
 
         $this->reset('amount', 'note');
         $this->resetPage();
@@ -182,11 +226,73 @@ new #[Title('Investment goal')] class extends Component {
 
         $this->validate($rules);
 
-        $contribution->update([
-            'amount' => number_format((float) $this->edit_amount, 2, '.', ''),
-            'date' => $this->edit_date,
-            'note' => filled($this->edit_note) ? $this->edit_note : null,
-        ]);
+        $user = Auth::user();
+        $newAmount = number_format((float) $this->edit_amount, 2, '.', '');
+
+        $existingDebit = $contribution->debitTransaction;
+
+        if ($existingDebit !== null) {
+            ExpensePaidBalance::assertCanSetExpensePaid(
+                $user,
+                TransactionStatus::Paid,
+                (float) $newAmount,
+                $existingDebit,
+                'edit_amount',
+            );
+        } else {
+            ExpensePaidBalance::assertCanSetExpensePaid(
+                $user,
+                TransactionStatus::Paid,
+                (float) $newAmount,
+                null,
+                'edit_amount',
+            );
+        }
+
+        DB::transaction(function () use ($contribution, $user, $newAmount): void {
+            $debit = $contribution->debitTransaction;
+
+            if ($debit === null) {
+                $category = Category::query()->firstOrCreate(
+                    [
+                        'user_id' => $user->id,
+                        'type' => TransactionType::Expense,
+                        'name' => __('Investments'),
+                    ],
+                    [
+                        'icon' => 'banknotes',
+                        'color' => 'emerald',
+                    ],
+                );
+
+                $debit = Transaction::query()->create([
+                    'user_id' => $user->id,
+                    'category_id' => $category->id,
+                    'description' => __('Investment contribution: :goal', ['goal' => $this->goal->name]),
+                    'amount' => $newAmount,
+                    'date' => $this->edit_date,
+                    'type' => TransactionType::Expense,
+                    'status' => TransactionStatus::Paid,
+                    'installment_number' => 1,
+                    'total_installments' => 1,
+                    'parent_id' => null,
+                ]);
+
+                $contribution->debit_transaction_id = $debit->id;
+            } else {
+                $debit->update([
+                    'amount' => $newAmount,
+                    'date' => $this->edit_date,
+                    'description' => __('Investment contribution: :goal', ['goal' => $this->goal->name]),
+                ]);
+            }
+
+            $contribution->update([
+                'amount' => $newAmount,
+                'date' => $this->edit_date,
+                'note' => filled($this->edit_note) ? $this->edit_note : null,
+            ]);
+        });
 
         $this->showEditContributionModal = false;
         $this->editingContributionId = null;
@@ -203,7 +309,15 @@ new #[Title('Investment goal')] class extends Component {
 
         $this->authorize('delete', $contribution);
 
-        $contribution->delete();
+        DB::transaction(function () use ($contribution): void {
+            $debit = $contribution->debitTransaction;
+
+            $contribution->delete();
+
+            if ($debit !== null) {
+                $debit->delete();
+            }
+        });
 
         $this->resetPage();
         unset($this->stats);
@@ -355,7 +469,6 @@ new #[Title('Investment goal')] class extends Component {
                     <flux:field class="sm:col-span-1">
                         <flux:label>{{ __('Amount') }}</flux:label>
                         <flux:input type="number" step="0.01" min="0" wire:model="amount" required />
-                        <flux:error name="amount" />
                     </flux:field>
 
                     <flux:field class="sm:col-span-1">
@@ -369,6 +482,14 @@ new #[Title('Investment goal')] class extends Component {
                         <flux:input wire:model="note" />
                         <flux:error name="note" />
                     </flux:field>
+
+                    @if ($errors->has('amount'))
+                        <div class="sm:col-span-3">
+                            <flux:callout icon="exclamation-triangle" color="red">
+                                <flux:callout.text>{{ $errors->first('amount') }}</flux:callout.text>
+                            </flux:callout>
+                        </div>
+                    @endif
 
                     <div class="sm:col-span-3 flex justify-end">
                         <flux:button variant="primary" type="submit" icon="plus">

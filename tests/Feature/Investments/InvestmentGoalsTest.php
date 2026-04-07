@@ -1,6 +1,7 @@
 <?php
 
-use App\Models\{InvestmentContribution, InvestmentGoal, User};
+use App\Enums\{TransactionStatus, TransactionType};
+use App\Models\{InvestmentContribution, InvestmentGoal, Transaction, User};
 use Livewire\Livewire;
 
 test('guests are redirected from investments pages', function () {
@@ -39,6 +40,7 @@ test('user can add contributions and stats update', function () {
     ]);
 
     $this->actingAs($user);
+    seedPaidIncome($user, '500.00');
 
     $component = Livewire::test('pages::investments.goal-show', ['goal' => $goal])
         ->set('amount', '200.00')
@@ -46,7 +48,17 @@ test('user can add contributions and stats update', function () {
         ->call('addContribution')
         ->assertHasNoErrors();
 
-    expect(InvestmentContribution::query()->where('investment_goal_id', $goal->id)->count())->toBe(1);
+    $contribution = InvestmentContribution::query()->where('investment_goal_id', $goal->id)->first();
+
+    expect($contribution)->not->toBeNull()
+        ->and($contribution->debit_transaction_id)->not->toBeNull();
+
+    expect(Transaction::query()
+        ->whereKey($contribution->debit_transaction_id)
+        ->where('user_id', $user->id)
+        ->where('type', TransactionType::Expense)
+        ->where('status', TransactionStatus::Paid)
+        ->exists())->toBeTrue();
 
     $stats = $component->get('stats');
 
@@ -86,12 +98,20 @@ test('user can edit and delete a goal', function () {
 test('user can edit and delete a contribution', function () {
     $user = User::factory()->create();
     $goal = InvestmentGoal::factory()->create(['user_id' => $user->id]);
-    $c    = InvestmentContribution::factory()->create([
-        'investment_goal_id' => $goal->id,
-        'user_id'            => $user->id,
-        'amount'             => '10.00',
-        'date'               => '2026-02-01',
-        'note'               => 'Old',
+    seedPaidIncome($user, '100.00');
+    $c = InvestmentContribution::factory()->create([
+        'investment_goal_id'   => $goal->id,
+        'user_id'              => $user->id,
+        'debit_transaction_id' => Transaction::factory()->create([
+            'user_id' => $user->id,
+            'type'    => TransactionType::Expense,
+            'status'  => TransactionStatus::Paid,
+            'amount'  => '10.00',
+            'date'    => '2026-02-01',
+        ])->id,
+        'amount' => '10.00',
+        'date'   => '2026-02-01',
+        'note'   => 'Old',
     ]);
 
     $this->actingAs($user);
@@ -108,11 +128,27 @@ test('user can edit and delete a contribution', function () {
         ->and($c->fresh()->date->format('Y-m-d'))->toBe('2026-02-02')
         ->and($c->fresh()->note)->toBe('New');
 
+    expect((string) Transaction::query()->find($c->fresh()->debit_transaction_id)?->amount)->toBe('25.00');
+
     Livewire::test('pages::investments.goal-show', ['goal' => $goal])
         ->call('deleteContribution', $c->id)
         ->assertHasNoErrors();
 
     expect(InvestmentContribution::query()->whereKey($c->id)->exists())->toBeFalse();
+    expect(Transaction::query()->whereKey($c->debit_transaction_id)->exists())->toBeFalse();
+});
+
+test('não registra aporte sem saldo suficiente', function () {
+    $user = User::factory()->create();
+    $goal = InvestmentGoal::factory()->create(['user_id' => $user->id]);
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::investments.goal-show', ['goal' => $goal])
+        ->set('amount', '200.00')
+        ->set('date', '2026-02-01')
+        ->call('addContribution')
+        ->assertHasErrors('amount');
 });
 
 test('user cannot view another users goal', function () {

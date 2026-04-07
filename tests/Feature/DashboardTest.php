@@ -15,5 +15,6 @@ test('authenticated users can visit the dashboard', function () {
     $response->assertOk()
         ->assertSee(__('Dashboard'), false)
         ->assertSee(__('Despesas no período'), false)
-        ->assertSee(__('Nova despesa'), false);
+        ->assertSee(__('Nova despesa'), false)
+        ->assertSee(__('Total investido'), false);
 });

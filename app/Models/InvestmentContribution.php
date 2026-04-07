@@ -14,6 +14,7 @@ class InvestmentContribution extends Model
     protected $fillable = [
         'investment_goal_id',
         'user_id',
+        'debit_transaction_id',
         'amount',
         'date',
         'note',
@@ -35,5 +36,10 @@ class InvestmentContribution extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function debitTransaction(): BelongsTo
+    {
+        return $this->belongsTo(Transaction::class, 'debit_transaction_id');
     }
 }

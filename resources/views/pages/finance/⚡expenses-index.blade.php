@@ -9,6 +9,7 @@ use App\Support\ExpensePaidBalance;
 use App\Support\FinancePeriodSummary;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -122,32 +123,54 @@ new #[Title('Despesas')] class extends Component {
         $query = Auth::user()
             ->transactions()
             ->with('category')
-            ->where('type', TransactionType::Expense);
+            ->where('transactions.type', TransactionType::Expense);
+
+        $query
+            ->leftJoin('categories as c', 'transactions.category_id', '=', 'c.id')
+            ->addSelect('transactions.*')
+            ->orderByRaw(
+                'case when c.name in (?, ?) then 0 else 1 end',
+                ['Investments', 'Investimentos'],
+            );
 
         if ($this->monthFilter !== '') {
             [$year, $month] = explode('-', $this->monthFilter);
-            $query->whereYear('date', (int) $year)->whereMonth('date', (int) $month);
+            $query->whereYear('transactions.date', (int) $year)->whereMonth('transactions.date', (int) $month);
         }
 
         if ($this->statusFilter === TransactionStatus::Paid->value) {
-            $query->where('status', TransactionStatus::Paid);
+            $query->where('transactions.status', TransactionStatus::Paid);
         } elseif ($this->statusFilter === TransactionStatus::Pending->value) {
-            $query->where('status', TransactionStatus::Pending);
+            $query->where('transactions.status', TransactionStatus::Pending);
         }
 
         if ($this->categoryFilter !== '') {
-            $query->where('category_id', (int) $this->categoryFilter);
+            $query->where('transactions.category_id', (int) $this->categoryFilter);
         }
 
         $term = trim($this->search);
         if ($term !== '') {
-            $query->where('description', 'like', '%'.$term.'%');
+            $query->where('transactions.description', 'like', '%'.$term.'%');
         }
 
         return $query
-            ->orderByDesc('date')
-            ->orderByDesc('id')
+            ->orderByDesc('transactions.date')
+            ->orderByDesc('transactions.id')
             ->paginate(15);
+    }
+
+    public function isInvestmentDebit(Transaction $transaction): bool
+    {
+        $categoryName = $transaction->category?->name ?? '';
+
+        if (! in_array($categoryName, ['Investments', 'Investimentos'], true)) {
+            return false;
+        }
+
+        return Str::startsWith($transaction->description, [
+            'Investment contribution:',
+            'Aporte de investimento:',
+        ]);
     }
 
     public function markAsPaid(int $transactionId): void
@@ -325,6 +348,11 @@ new #[Title('Despesas')] class extends Component {
                             </td>
                             <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
                                 {{ $transaction->category?->name ?? '—' }}
+                                @if ($this->isInvestmentDebit($transaction))
+                                    <flux:badge size="sm" inset="top bottom" color="emerald" class="ms-2">
+                                        {{ __('Investment') }}
+                                    </flux:badge>
+                                @endif
                             </td>
                             <td class="px-4 py-3 text-sm">
                                 <flux:badge size="sm" inset="top bottom" :color="$transaction->status === \App\Enums\TransactionStatus::Paid ? 'green' : 'amber'">
@@ -379,6 +407,12 @@ new #[Title('Despesas')] class extends Component {
                                     {{ $transaction->date->format('d/m/Y') }}
                                     <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
                                     {{ $transaction->category?->name ?? '—' }}
+                                    @if ($this->isInvestmentDebit($transaction))
+                                        <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
+                                        <span class="font-medium text-emerald-700 dark:text-emerald-400">
+                                            {{ __('Investment') }}
+                                        </span>
+                                    @endif
                                     <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
                                     {{ __('Parcela') }} {{ $transaction->installment_number }}/{{ $transaction->total_installments }}
                                 </div>

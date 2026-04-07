@@ -85,6 +85,9 @@
   "I already have an account": "Já tenho conta",
   "Footer": "Rodapé",
   "Investments": "Investimentos",
+  "Investment": "Investimento",
+  "Total investido": "Total investido",
+  "Abrir investimentos": "Abrir investimentos",
   "Investimentos": "Investimentos",
   "Track goals and contributions without affecting your balance.": "Acompanhe metas e aportes sem afetar seu saldo.",
   "New goal": "Nova meta",
@@ -321,5 +324,8 @@
   "Periods & balance": "Períodos e saldo",
   "View income, expenses, and available balance across daily to yearly views.": "Veja receitas, despesas e saldo disponível em visões do dia a dia ao ano.",
   "Installments & categories": "Parcelas e categorias",
-  "Plan installment purchases and keep spending tidy with your own categories.": "Planeje compras parceladas e mantenha os gastos organizados com suas categorias."
+  "Plan installment purchases and keep spending tidy with your own categories.": "Planeje compras parceladas e mantenha os gastos organizados com suas categorias.",
+  "Investment contribution: :goal": "Aporte de investimento: :goal",
+  "Contributions are recorded as paid expenses to debit your available balance.": "Os aportes são registrados como despesas pagas para debitar seu saldo disponível.",
+  "Apenas receitas recebidas e despesas pagas no período (inclui débitos de investimentos).": "Apenas receitas recebidas e despesas pagas no período (inclui débitos de investimentos)."
 }
