@@ -44,7 +44,7 @@ new #[Title('Dashboard')] class extends Component {
     public function getMonthLabelProperty(): string
     {
         if ($this->monthFilter === '') {
-            return __('Todos os períodos');
+            return __('All periods');
         }
 
         return Carbon::createFromFormat('Y-m', $this->monthFilter)
@@ -78,37 +78,37 @@ new #[Title('Dashboard')] class extends Component {
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
                 <flux:heading size="xl">{{ __('Dashboard') }}</flux:heading>
-                <flux:text class="mt-1">{{ __('Visão geral das suas finanças neste mês.') }}</flux:text>
+                <flux:text class="mt-1">{{ __('A quick overview of your finances for this month.') }}</flux:text>
             </div>
             <div class="flex flex-wrap gap-2">
                 <flux:button variant="primary" :href="route('finance.expenses.create')" icon="plus" wire:navigate>
-                    {{ __('Nova despesa') }}
+                    {{ __('New expense') }}
                 </flux:button>
                 <flux:button variant="filled" :href="route('finance.incomes.create')" icon="plus" wire:navigate>
-                    {{ __('Nova receita') }}
+                    {{ __('New income') }}
                 </flux:button>
                 <flux:button variant="ghost" :href="route('finance.categories.index')" icon="folder" wire:navigate>
-                    {{ __('Categorias') }}
+                    {{ __('Categories') }}
                 </flux:button>
             </div>
         </div>
 
         <div class="flex flex-wrap items-end gap-3">
             <flux:field class="max-w-xs">
-                <flux:label>{{ __('Mês') }}</flux:label>
+                <flux:label>{{ __('Month') }}</flux:label>
                 <flux:input type="month" wire:model.live="monthFilter" />
             </flux:field>
             <flux:button type="button" variant="ghost" size="sm" wire:click="clearMonthFilter">
-                {{ __('Todos os períodos') }}
+                {{ __('All periods') }}
             </flux:button>
             <flux:button type="button" variant="ghost" size="sm" wire:click="useCurrentMonthFilter">
-                {{ __('Mês atual') }}
+                {{ __('Current month') }}
             </flux:button>
         </div>
 
         <div>
             <flux:heading size="lg" @class(['capitalize' => $this->monthFilter !== ''])>{{ $this->monthLabel }}</flux:heading>
-            <flux:text class="mt-1 text-zinc-500">{{ __('Resumo e pendências do período.') }}</flux:text>
+            <flux:text class="mt-1 text-zinc-500">{{ __('Period summary and what is still outstanding.') }}</flux:text>
         </div>
 
         @include('pages.finance.partials.period-summary', ['summary' => $this->summary])
@@ -119,50 +119,50 @@ new #[Title('Dashboard')] class extends Component {
                 wire:navigate
                 class="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600"
             >
-                <flux:heading size="sm" class="text-zinc-500">{{ __('Despesas a pagar') }}</flux:heading>
+                <flux:heading size="sm" class="text-zinc-500">{{ __('Expenses to pay') }}</flux:heading>
                 <p class="mt-2 text-2xl font-semibold tabular-nums text-amber-600 dark:text-amber-400">
                     {{ 'R$ '.number_format($this->summary['expenses']['pending'], 2, ',', '.') }}
                 </p>
-                <flux:text class="mt-2 text-sm">{{ __('Abrir despesas') }} →</flux:text>
+                <flux:text class="mt-2 text-sm">{{ __('Open expenses') }} →</flux:text>
             </a>
             <a
                 href="{{ route('finance.incomes.index') }}"
                 wire:navigate
                 class="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600"
             >
-                <flux:heading size="sm" class="text-zinc-500">{{ __('Receitas a receber') }}</flux:heading>
+                <flux:heading size="sm" class="text-zinc-500">{{ __('Income to receive') }}</flux:heading>
                 <p class="mt-2 text-2xl font-semibold tabular-nums text-amber-600 dark:text-amber-400">
                     {{ 'R$ '.number_format($this->summary['incomes']['pending'], 2, ',', '.') }}
                 </p>
-                <flux:text class="mt-2 text-sm">{{ __('Abrir receitas') }} →</flux:text>
+                <flux:text class="mt-2 text-sm">{{ __('Open income') }} →</flux:text>
             </a>
             <a
                 href="{{ route('investments.goals.index') }}"
                 wire:navigate
                 class="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-zinc-300 dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-zinc-600"
             >
-                <flux:heading size="sm" class="text-zinc-500">{{ __('Total investido') }}</flux:heading>
+                <flux:heading size="sm" class="text-zinc-500">{{ __('Total invested') }}</flux:heading>
                 <p class="mt-2 text-2xl font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
                     {{ 'R$ '.number_format($this->summary['expenses']['investmentsPaid'] ?? 0, 2, ',', '.') }}
                 </p>
-                <flux:text class="mt-2 text-sm">{{ __('Abrir investimentos') }} →</flux:text>
+                <flux:text class="mt-2 text-sm">{{ __('Open investments') }} →</flux:text>
             </a>
         </div>
 
         <div>
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
-                <flux:heading size="lg">{{ __('Últimos lançamentos') }}</flux:heading>
+                <flux:heading size="lg">{{ __('Recent transactions') }}</flux:heading>
             </div>
 
             <div class="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
                 <table class="min-w-full divide-y divide-zinc-200 dark:divide-zinc-700">
                     <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                         <tr>
-                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Data') }}</th>
-                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Tipo') }}</th>
-                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Descrição') }}</th>
-                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Categoria') }}</th>
-                            <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Valor') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Date') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Type') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Description') }}</th>
+                            <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Category') }}</th>
+                            <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Amount') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
@@ -173,7 +173,7 @@ new #[Title('Dashboard')] class extends Component {
                                 </td>
                                 <td class="px-4 py-3 text-sm">
                                     <flux:badge size="sm" inset="top bottom" :color="$transaction->type === \App\Enums\TransactionType::Expense ? 'zinc' : 'green'">
-                                        {{ $transaction->type === \App\Enums\TransactionType::Expense ? __('Despesa') : __('Receita') }}
+                                        {{ $transaction->type === \App\Enums\TransactionType::Expense ? __('Expense') : __('Income') }}
                                     </flux:badge>
                                 </td>
                                 <td class="px-4 py-3 text-sm text-zinc-900 dark:text-zinc-100">
@@ -189,7 +189,7 @@ new #[Title('Dashboard')] class extends Component {
                         @empty
                             <tr>
                                 <td colspan="5" class="px-4 py-8 text-center text-sm text-zinc-500">
-                                    {{ __('Nenhum lançamento ainda. Registre uma despesa ou receita para começar.') }}
+                                    {{ __('No transactions yet. Add an expense or income to get started.') }}
                                 </td>
                             </tr>
                         @endforelse

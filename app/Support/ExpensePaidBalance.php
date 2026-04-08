@@ -48,7 +48,7 @@ final class ExpensePaidBalance
 
         if ($capacity < $newAmount) {
             throw ValidationException::withMessages([
-                $attribute => __('Saldo insuficiente. Registre receitas recebidas ou deixe a despesa como pendente.'),
+                $attribute => __('Insufficient balance. Record received income or leave the expense as pending.'),
             ]);
         }
     }

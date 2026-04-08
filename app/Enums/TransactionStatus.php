@@ -13,16 +13,16 @@ enum TransactionStatus: string
     public function label(?TransactionType $forType = null): string
     {
         if ($this === self::Pending) {
-            return 'Pendente';
+            return __('Pending');
         }
 
         if ($forType === null) {
-            return 'Pago';
+            return __('Paid');
         }
 
         return match ($forType) {
-            TransactionType::Expense => 'Pago',
-            TransactionType::Income  => 'Recebido',
+            TransactionType::Expense => __('Paid'),
+            TransactionType::Income  => __('Received'),
         };
     }
 }

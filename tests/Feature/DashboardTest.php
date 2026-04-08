@@ -14,7 +14,7 @@ test('authenticated users can visit the dashboard', function () {
     $response = $this->get(route('dashboard'));
     $response->assertOk()
         ->assertSee(__('Dashboard'), false)
-        ->assertSee(__('Despesas no período'), false)
-        ->assertSee(__('Nova despesa'), false)
-        ->assertSee(__('Total investido'), false);
+        ->assertSee(__('Expenses in period'), false)
+        ->assertSee(__('New expense'), false)
+        ->assertSee(__('Total invested'), false);
 });

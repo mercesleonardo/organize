@@ -9,7 +9,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Categorias')] class extends Component {
+new #[Title('Categories')] class extends Component {
     public string $name = '';
 
     public string $icon = '';
@@ -114,9 +114,9 @@ new #[Title('Categorias')] class extends Component {
 <div>
     <div class="flex flex-col gap-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
-            <flux:heading size="xl">{{ __('Categorias') }}</flux:heading>
+            <flux:heading size="xl">{{ __('Categories') }}</flux:heading>
             <flux:button variant="primary" wire:click="openCreate" icon="plus">
-                {{ __('Nova categoria') }}
+                {{ __('New category') }}
             </flux:button>
         </div>
 
@@ -125,9 +125,9 @@ new #[Title('Categorias')] class extends Component {
             <table class="hidden min-w-full divide-y divide-zinc-200 dark:divide-zinc-700 md:table">
                 <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                     <tr>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Nome') }}</th>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Tipo') }}</th>
-                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Ações') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Name') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Type') }}</th>
+                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
@@ -148,22 +148,22 @@ new #[Title('Categorias')] class extends Component {
                             </td>
                             <td class="px-4 py-3 text-end text-sm">
                                 <flux:button size="sm" variant="ghost" wire:click="openEdit({{ $category->id }})">
-                                    {{ __('Editar') }}
+                                    {{ __('Edit') }}
                                 </flux:button>
                                 <flux:button
                                     size="sm"
                                     variant="danger"
                                     wire:click="delete({{ $category->id }})"
-                                    wire:confirm="{{ __('Excluir esta categoria? Transações vinculadas serão removidas.') }}"
+                                    wire:confirm="{{ __('Delete this category? Linked transactions will be removed.') }}"
                                 >
-                                    {{ __('Excluir') }}
+                                    {{ __('Delete') }}
                                 </flux:button>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="3" class="px-4 py-8 text-center text-sm text-zinc-500">
-                                {{ __('Nenhuma categoria ainda.') }}
+                                {{ __('No categories yet.') }}
                             </td>
                         </tr>
                     @endforelse
@@ -191,24 +191,24 @@ new #[Title('Categorias')] class extends Component {
                                 </div>
                             </div>
                             <div class="flex shrink-0 items-center gap-2">
-                                <x-action-dropdown :title="__('Ações')">
+                                <x-action-dropdown :title="__('Actions')">
                                     <flux:menu.item icon="pencil" wire:click="openEdit({{ $category->id }})">
-                                        {{ __('Editar') }}
+                                        {{ __('Edit') }}
                                     </flux:menu.item>
                                     <flux:menu.separator />
                                     <flux:menu.item
                                         icon="trash"
                                         wire:click="delete({{ $category->id }})"
-                                        wire:confirm="{{ __('Excluir esta categoria? Transações vinculadas serão removidas.') }}"
+                                        wire:confirm="{{ __('Delete this category? Linked transactions will be removed.') }}"
                                     >
-                                        {{ __('Excluir') }}
+                                        {{ __('Delete') }}
                                     </flux:menu.item>
                                 </x-action-dropdown>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <x-empty-state :message="__('Nenhuma categoria ainda.')" />
+                    <x-empty-state :message="__('No categories yet.')" />
                 @endforelse
             </div>
         </div>
@@ -217,30 +217,30 @@ new #[Title('Categorias')] class extends Component {
     <flux:modal wire:model="showModal" class="md:w-lg">
         <form wire:submit="save" class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ $this->editingId ? __('Editar categoria') : __('Nova categoria') }}</flux:heading>
-                <flux:text class="mt-2">{{ __('Toda transação deve estar em uma categoria.') }}</flux:text>
+                <flux:heading size="lg">{{ $this->editingId ? __('Edit category') : __('New category') }}</flux:heading>
+                <flux:text class="mt-2">{{ __('Every transaction must belong to a category.') }}</flux:text>
             </div>
 
             <flux:field>
-                <flux:label>{{ __('Nome') }}</flux:label>
-                <flux:input wire:model="name" :placeholder="__('Ex.: Moradia')" required />
+                <flux:label>{{ __('Name') }}</flux:label>
+                <flux:input wire:model="name" :placeholder="__('e.g. Housing')" required />
                 <flux:error name="name" />
             </flux:field>
 
-            <flux:radio.group wire:model.live="type" :label="__('Tipo')">
-                <flux:radio value="expense" :label="__('Despesa')" />
-                <flux:radio value="income" :label="__('Receita')" />
+            <flux:radio.group wire:model.live="type" :label="__('Type')">
+                <flux:radio value="expense" :label="__('Expense')" />
+                <flux:radio value="income" :label="__('Income')" />
             </flux:radio.group>
             <flux:error name="type" />
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:field>
-                    <flux:label>{{ __('Ícone (opcional)') }}</flux:label>
+                    <flux:label>{{ __('Icon (optional)') }}</flux:label>
                     <flux:input wire:model="icon" :placeholder="__('home')" />
                     <flux:error name="icon" />
                 </flux:field>
                 <flux:field>
-                    <flux:label>{{ __('Cor (hex opcional)') }}</flux:label>
+                    <flux:label>{{ __('Color (optional hex)') }}</flux:label>
                     <flux:input type="color" wire:model="color" />
                     <flux:error name="color" />
                 </flux:field>
@@ -248,9 +248,9 @@ new #[Title('Categorias')] class extends Component {
 
             <div class="flex justify-end gap-2">
                 <flux:modal.close>
-                    <flux:button variant="ghost" type="button">{{ __('Cancelar') }}</flux:button>
+                    <flux:button variant="ghost" type="button">{{ __('Cancel') }}</flux:button>
                 </flux:modal.close>
-                <flux:button variant="primary" type="submit">{{ __('Salvar') }}</flux:button>
+                <flux:button variant="primary" type="submit">{{ __('Save') }}</flux:button>
             </div>
         </form>
     </flux:modal>

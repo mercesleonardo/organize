@@ -13,7 +13,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Title('Receitas')] class extends Component {
+new #[Title('Incomes')] class extends Component {
     use WithPagination;
 
     public string $monthFilter = '';
@@ -209,7 +209,7 @@ new #[Title('Receitas')] class extends Component {
 
         if ($category->type !== TransactionType::Income) {
             throw ValidationException::withMessages([
-                'edit_category_id' => __('Escolha uma categoria de receita.'),
+                'edit_category_id' => __('Please choose an income category.'),
             ]);
         }
 
@@ -246,30 +246,30 @@ new #[Title('Receitas')] class extends Component {
     <div class="flex flex-col gap-6">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
-                <flux:heading size="xl">{{ __('Receitas') }}</flux:heading>
-                <flux:text class="mt-1">{{ __('Suas entradas de dinheiro e parcelas futuras.') }}</flux:text>
+                <flux:heading size="xl">{{ __('Incomes') }}</flux:heading>
+                <flux:text class="mt-1">{{ __('Your incoming money and future installments.') }}</flux:text>
             </div>
             <flux:button variant="primary" :href="route('finance.incomes.create')" icon="plus" wire:navigate>
-                {{ __('Nova receita') }}
+                {{ __('New income') }}
             </flux:button>
         </div>
 
         <div class="flex flex-wrap items-end gap-3">
             <flux:field class="max-w-xs">
-                <flux:label>{{ __('Mês') }}</flux:label>
+                <flux:label>{{ __('Month') }}</flux:label>
                 <flux:input type="month" wire:model.live="monthFilter" />
             </flux:field>
             <flux:button type="button" variant="ghost" size="sm" wire:click="clearMonthFilter">
-                {{ __('Todos os períodos') }}
+                {{ __('All periods') }}
             </flux:button>
             <flux:button type="button" variant="ghost" size="sm" wire:click="useCurrentMonthFilter">
-                {{ __('Mês atual') }}
+                {{ __('Current month') }}
             </flux:button>
         </div>
 
         @include('pages.finance.partials.transaction-list-filters', [
             'categories' => $this->categoriesForEdit,
-            'statusPaidLabel' => __('Recebido'),
+            'statusPaidLabel' => __('Received'),
         ])
 
         @include('pages.finance.partials.period-summary', ['summary' => $this->summary])
@@ -279,13 +279,13 @@ new #[Title('Receitas')] class extends Component {
             <table class="hidden min-w-full divide-y divide-zinc-200 dark:divide-zinc-700 md:table">
                 <thead class="bg-zinc-50 dark:bg-zinc-900/50">
                     <tr>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Data') }}</th>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Descrição') }}</th>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Categoria') }}</th>
-                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Recebimento') }}</th>
-                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Valor') }}</th>
-                        <th class="px-4 py-3 text-center text-xs font-medium uppercase text-zinc-500">{{ __('Parcela') }}</th>
-                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Ações') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Date') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Description') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Category') }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium uppercase text-zinc-500">{{ __('Receipt') }}</th>
+                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Amount') }}</th>
+                        <th class="px-4 py-3 text-center text-xs font-medium uppercase text-zinc-500">{{ __('Installment') }}</th>
+                        <th class="px-4 py-3 text-end text-xs font-medium uppercase text-zinc-500">{{ __('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 bg-white dark:divide-zinc-700 dark:bg-zinc-800">
@@ -314,26 +314,26 @@ new #[Title('Receitas')] class extends Component {
                             <td class="whitespace-nowrap px-4 py-3 text-end text-sm">
                                 @if ($transaction->status === \App\Enums\TransactionStatus::Pending)
                                     <flux:button size="sm" variant="primary" wire:click="markAsReceived({{ $transaction->id }})">
-                                        {{ __('Marcar como recebido') }}
+                                        {{ __('Mark as received') }}
                                     </flux:button>
                                 @endif
                                 <flux:button size="sm" variant="ghost" wire:click="openEdit({{ $transaction->id }})">
-                                    {{ __('Editar') }}
+                                    {{ __('Edit') }}
                                 </flux:button>
                                 <flux:button
                                     size="sm"
                                     variant="danger"
                                     wire:click="delete({{ $transaction->id }})"
-                                    wire:confirm="{{ __('Excluir esta receita? Se for a parcela mestre, as demais parcelas também serão removidas.') }}"
+                                    wire:confirm="{{ __('Delete this income? If this is the master installment, the other installments will be removed too.') }}"
                                 >
-                                    {{ __('Excluir') }}
+                                    {{ __('Delete') }}
                                 </flux:button>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="7" class="px-4 py-8 text-center text-sm text-zinc-500">
-                                {{ __('Nenhuma receita neste período.') }}
+                                {{ __('No income in this period.') }}
                             </td>
                         </tr>
                     @endforelse
@@ -354,7 +354,7 @@ new #[Title('Receitas')] class extends Component {
                                     <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
                                     {{ $transaction->category?->name ?? '—' }}
                                     <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
-                                    {{ __('Parcela') }} {{ $transaction->installment_number }}/{{ $transaction->total_installments }}
+                                    {{ __('Installment') }} {{ $transaction->installment_number }}/{{ $transaction->total_installments }}
                                 </div>
                                 <div class="mt-2 flex items-center gap-2">
                                     <flux:badge
@@ -374,27 +374,27 @@ new #[Title('Receitas')] class extends Component {
                         <div class="mt-3 flex flex-wrap justify-end gap-2">
                             @if ($transaction->status === \App\Enums\TransactionStatus::Pending)
                                 <flux:button size="sm" variant="primary" wire:click="markAsReceived({{ $transaction->id }})">
-                                    {{ __('Marcar como recebido') }}
+                                    {{ __('Mark as received') }}
                                 </flux:button>
                             @endif
 
-                            <x-action-dropdown :title="__('Ações')">
+                            <x-action-dropdown :title="__('Actions')">
                                 <flux:menu.item icon="pencil" wire:click="openEdit({{ $transaction->id }})">
-                                    {{ __('Editar') }}
+                                    {{ __('Edit') }}
                                 </flux:menu.item>
                                 <flux:menu.separator />
                                 <flux:menu.item
                                     icon="trash"
                                     wire:click="delete({{ $transaction->id }})"
-                                    wire:confirm="{{ __('Excluir esta receita? Se for a parcela mestre, as demais parcelas também serão removidas.') }}"
+                                    wire:confirm="{{ __('Delete this income? If this is the master installment, the other installments will be removed too.') }}"
                                 >
-                                    {{ __('Excluir') }}
+                                    {{ __('Delete') }}
                                 </flux:menu.item>
                             </x-action-dropdown>
                         </div>
                     </div>
                 @empty
-                    <x-empty-state :message="__('Nenhuma receita neste período.')" />
+                    <x-empty-state :message="__('No income in this period.')" />
                 @endforelse
             </div>
         </div>
@@ -409,17 +409,17 @@ new #[Title('Receitas')] class extends Component {
     <flux:modal wire:model="showEditModal" class="md:w-lg">
         <form wire:submit="saveEdit" class="space-y-6">
             <div>
-                <flux:heading size="lg">{{ __('Editar receita') }}</flux:heading>
+                <flux:heading size="lg">{{ __('Edit income') }}</flux:heading>
                 @if ($edit_total_installments > 1)
                     <flux:text class="mt-2">
-                        {{ __('Parcela :n de :total (estrutura de parcelas não é alterada aqui).', ['n' => $edit_installment_number, 'total' => $edit_total_installments]) }}
+                        {{ __('Installment :n of :total (installment structure is not changed here).', ['n' => $edit_installment_number, 'total' => $edit_total_installments]) }}
                     </flux:text>
                 @endif
             </div>
 
             <flux:field>
-                <flux:label>{{ __('Categoria') }}</flux:label>
-                <flux:select wire:model="edit_category_id" :placeholder="__('Selecione…')" :disabled="$this->categoriesForEdit->isEmpty()">
+                <flux:label>{{ __('Category') }}</flux:label>
+                <flux:select wire:model="edit_category_id" :placeholder="__('Select…')" :disabled="$this->categoriesForEdit->isEmpty()">
                     @foreach ($this->categoriesForEdit as $cat)
                         <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
                     @endforeach
@@ -428,35 +428,35 @@ new #[Title('Receitas')] class extends Component {
             </flux:field>
 
             <flux:field>
-                <flux:label>{{ __('Descrição') }}</flux:label>
+                <flux:label>{{ __('Description') }}</flux:label>
                 <flux:input wire:model="edit_description" required />
                 <flux:error name="edit_description" />
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:field>
-                    <flux:label>{{ __('Valor') }}</flux:label>
+                    <flux:label>{{ __('Amount') }}</flux:label>
                     <flux:input type="number" step="0.01" min="0" wire:model="edit_amount" required />
                     <flux:error name="edit_amount" />
                 </flux:field>
                 <flux:field>
-                    <flux:label>{{ __('Data') }}</flux:label>
+                    <flux:label>{{ __('Date') }}</flux:label>
                     <flux:input type="date" wire:model="edit_date" required />
                     <flux:error name="edit_date" />
                 </flux:field>
             </div>
 
-            <flux:radio.group wire:model="edit_status" :label="__('Recebimento')">
-                <flux:radio value="pending" :label="__('Pendente')" />
-                <flux:radio value="paid" :label="__('Recebido')" />
+            <flux:radio.group wire:model="edit_status" :label="__('Receipt')">
+                <flux:radio value="pending" :label="__('Pending')" />
+                <flux:radio value="paid" :label="__('Received')" />
             </flux:radio.group>
             <flux:error name="edit_status" />
 
             <div class="flex justify-end gap-2">
                 <flux:modal.close>
-                    <flux:button variant="ghost" type="button">{{ __('Cancelar') }}</flux:button>
+                    <flux:button variant="ghost" type="button">{{ __('Cancel') }}</flux:button>
                 </flux:modal.close>
-                <flux:button variant="primary" type="submit">{{ __('Salvar') }}</flux:button>
+                <flux:button variant="primary" type="submit">{{ __('Save') }}</flux:button>
             </div>
         </form>
     </flux:modal>

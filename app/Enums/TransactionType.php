@@ -10,8 +10,8 @@ enum TransactionType: string
     public function label(): string
     {
         return match ($this) {
-            self::Income  => 'Receita',
-            self::Expense => 'Despesa',
+            self::Income  => __('Income'),
+            self::Expense => __('Expense'),
         };
     }
 }

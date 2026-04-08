@@ -16,16 +16,16 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="tag" :href="route('finance.categories.index')" :current="request()->routeIs('finance.categories.index')" wire:navigate>
-                        {{ __('Categorias') }}
+                        {{ __('Categories') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="arrow-trending-down" :href="route('finance.expenses.index')" :current="request()->routeIs('finance.expenses.*')" wire:navigate>
-                        {{ __('Despesas') }}
+                        {{ __('Expenses') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="arrow-trending-up" :href="route('finance.incomes.index')" :current="request()->routeIs('finance.incomes.*')" wire:navigate>
-                        {{ __('Receitas') }}
+                        {{ __('Incomes') }}
                     </flux:sidebar.item>
                     <flux:sidebar.item icon="banknotes" :href="route('investments.goals.index')" :current="request()->routeIs('investments.goals.*')" wire:navigate>
-                        {{ __('Investimentos') }}
+                        {{ __('Investments') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>

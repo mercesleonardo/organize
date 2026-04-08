@@ -12,7 +12,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Nova receita')] class extends Component {
+new #[Title('New income')] class extends Component {
     public ?int $category_id = null;
 
     public string $description = '';
@@ -21,7 +21,7 @@ new #[Title('Nova receita')] class extends Component {
 
     public string $date = '';
 
-    /** @var 'income' Sempre receita neste formulário. */
+    /** @var string Always income in this form. */
     public string $type = 'income';
 
     public string $status = '';
@@ -62,7 +62,7 @@ new #[Title('Nova receita')] class extends Component {
 
         if ($category->type !== TransactionType::Income) {
             throw ValidationException::withMessages([
-                'category_id' => __('Escolha uma categoria de receita.'),
+                'category_id' => __('Please choose an income category.'),
             ]);
         }
 
@@ -79,7 +79,7 @@ new #[Title('Nova receita')] class extends Component {
             installmentCount: $installmentCount,
         ));
 
-        session()->flash('status', __('Receita registrada.'));
+        session()->flash('status', __('Income saved.'));
 
         $this->reset('description', 'is_installment');
         $this->amount = '';
@@ -92,8 +92,8 @@ new #[Title('Nova receita')] class extends Component {
 <div>
     <div class="mx-auto flex max-w-2xl flex-col gap-6">
         <div>
-            <flux:heading size="xl">{{ __('Nova receita') }}</flux:heading>
-            <flux:text class="mt-2">{{ __('Registre uma entrada de dinheiro. Parcelas geram lançamentos futuros automaticamente.') }}</flux:text>
+            <flux:heading size="xl">{{ __('New income') }}</flux:heading>
+            <flux:text class="mt-2">{{ __('Record money coming in. Installments create future entries automatically.') }}</flux:text>
         </div>
 
         @if (session('status'))
@@ -104,10 +104,10 @@ new #[Title('Nova receita')] class extends Component {
 
         @if ($this->categories->isEmpty())
             <flux:callout icon="exclamation-triangle" color="amber">
-                <flux:callout.text>{{ __('Crie uma categoria de receita antes de lançar.') }}</flux:callout.text>
+                <flux:callout.text>{{ __('Create an income category before adding a transaction.') }}</flux:callout.text>
                 <x-slot name="actions">
                     <flux:button :href="route('finance.categories.index')" variant="primary" size="sm" wire:navigate>
-                        {{ __('Ir para categorias') }}
+                        {{ __('Go to categories') }}
                     </flux:button>
                 </x-slot>
             </flux:callout>
@@ -115,8 +115,8 @@ new #[Title('Nova receita')] class extends Component {
 
         <form wire:submit="save" class="space-y-6">
             <flux:field>
-                <flux:label>{{ __('Categoria') }}</flux:label>
-                <flux:select wire:model="category_id" :placeholder="__('Selecione…')" :disabled="$this->categories->isEmpty()">
+                <flux:label>{{ __('Category') }}</flux:label>
+                <flux:select wire:model="category_id" :placeholder="__('Select…')" :disabled="$this->categories->isEmpty()">
                     @foreach ($this->categories as $cat)
                         <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
                     @endforeach
@@ -125,39 +125,39 @@ new #[Title('Nova receita')] class extends Component {
             </flux:field>
 
             <flux:field>
-                <flux:label>{{ __('Descrição') }}</flux:label>
-                <flux:input wire:model="description" :placeholder="__('Ex.: Salário')" required />
+                <flux:label>{{ __('Description') }}</flux:label>
+                <flux:input wire:model="description" :placeholder="__('e.g. Salary')" required />
                 <flux:error name="description" />
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:field>
-                    <flux:label>{{ __('Valor total') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="amount" :placeholder="__('0,00')" required />
+                    <flux:label>{{ __('Total amount') }}</flux:label>
+                    <flux:input type="number" step="0.01" min="0" wire:model="amount" :placeholder="__('0.00')" required />
                     <flux:error name="amount" />
                 </flux:field>
                 <flux:field>
-                    <flux:label>{{ __('Data (1ª parcela / única)') }}</flux:label>
+                    <flux:label>{{ __('Date (first installment / single)') }}</flux:label>
                     <flux:input type="date" wire:model="date" required />
                     <flux:error name="date" />
                 </flux:field>
             </div>
 
-            <flux:radio.group wire:model="status" :label="__('Situação')">
-                <flux:radio value="pending" :label="__('Pendente de recebimento')" />
-                <flux:radio value="paid" :label="__('Já recebido')" />
+            <flux:radio.group wire:model="status" :label="__('Status')">
+                <flux:radio value="pending" :label="__('Pending receipt')" />
+                <flux:radio value="paid" :label="__('Already received')" />
             </flux:radio.group>
             <flux:error name="status" />
 
             <flux:field variant="inline">
-                <flux:label>{{ __('Parcelado?') }}</flux:label>
-                <flux:switch wire:model.live="is_installment" :label="__('Dividir em parcelas mensais')" align="left" />
+                <flux:label>{{ __('Installment plan?') }}</flux:label>
+                <flux:switch wire:model.live="is_installment" :label="__('Split into monthly installments')" align="left" />
                 <flux:error name="is_installment" />
             </flux:field>
 
             @if ($is_installment)
                 <flux:field>
-                    <flux:label>{{ __('Número de parcelas') }}</flux:label>
+                    <flux:label>{{ __('Number of installments') }}</flux:label>
                     <flux:input type="number" min="2" max="120" wire:model="installment_count" />
                     <flux:error name="installment_count" />
                 </flux:field>
@@ -165,7 +165,7 @@ new #[Title('Nova receita')] class extends Component {
 
             <div class="flex justify-end gap-2">
                 <flux:button variant="primary" type="submit" :disabled="$this->categories->isEmpty()">
-                    {{ __('Salvar receita') }}
+                    {{ __('Save income') }}
                 </flux:button>
             </div>
         </form>
