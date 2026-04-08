@@ -311,6 +311,7 @@
   "Log out": "Sair",
   "Or continue with": "Ou continue com",
   "Continue with Google": "Continuar com Google",
+  "Google sign-in session expired. Please try again, using the same site address you started from (e.g. only localhost or only 127.0.0.1).": "A sessão do login com Google expirou ou não coincide. Tente de novo usando o mesmo endereço em que começou (por exemplo, só localhost ou só 127.0.0.1). Se o problema continuar em desenvolvimento, defina GOOGLE_OAUTH_STATELESS=true no .env.",
   "Security settings": "Configurações de segurança",
   "Security": "Segurança",
   "Two-factor authentication enabled": "Autenticação de dois fatores ativada",

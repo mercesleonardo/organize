@@ -71,13 +71,9 @@
             </div>
         </div>
 
-        <flux:button
-            variant="outline"
-            :href="route('auth.google.redirect')"
-            class="w-full"
-        >
+        <x-google-oauth-button :href="route('auth.google.redirect')">
             {{ __('Continue with Google') }}
-        </flux:button>
+        </x-google-oauth-button>
 
         @if (Route::has('register'))
             <div class="space-x-1 text-sm text-center rtl:space-x-reverse text-zinc-600 dark:text-zinc-400">

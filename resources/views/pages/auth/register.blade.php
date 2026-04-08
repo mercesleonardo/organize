@@ -81,13 +81,9 @@
             </div>
         </div>
 
-        <flux:button
-            variant="outline"
-            :href="route('auth.google.redirect')"
-            class="w-full"
-        >
+        <x-google-oauth-button :href="route('auth.google.redirect')">
             {{ __('Continue with Google') }}
-        </flux:button>
+        </x-google-oauth-button>
 
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
             <span>{{ __('Already have an account?') }}</span>

@@ -7,21 +7,27 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Laravel\Socialite\Contracts\Provider as SocialiteProvider;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 use Symfony\Component\HttpFoundation\RedirectResponse as SymfonyRedirectResponse;
 
 class GoogleController extends Controller
 {
     public function redirect(): SymfonyRedirectResponse
     {
-        return Socialite::driver('google')
-            ->scopes(['openid', 'profile', 'email'])
-            ->redirect();
+        return $this->googleProvider()->redirect();
     }
 
     public function callback(): RedirectResponse
     {
-        $googleUser = Socialite::driver('google')->user();
+        try {
+            $googleUser = $this->googleProvider()->user();
+        } catch (InvalidStateException) {
+            return redirect()
+                ->route('login')
+                ->with('status', __('Google sign-in session expired. Please try again, using the same site address you started from (e.g. only localhost or only 127.0.0.1).'));
+        }
 
         $email    = $googleUser->getEmail();
         $googleId = $googleUser->getId();
@@ -48,5 +54,16 @@ class GoogleController extends Controller
         Auth::login($user, remember: true);
 
         return redirect()->route('dashboard');
+    }
+
+    private function googleProvider(): SocialiteProvider
+    {
+        $driver = Socialite::driver('google')->scopes(['openid', 'profile', 'email']);
+
+        if (config('services.google.stateless')) {
+            $driver = $driver->stateless();
+        }
+
+        return $driver;
     }
 }

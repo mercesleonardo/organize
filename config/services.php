@@ -39,6 +39,11 @@ return [
         'client_id'     => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect'      => env('GOOGLE_REDIRECT_URL'),
+        /*
+         * Em localhost, se a sessão não persistir entre o redirect e o callback (InvalidStateException),
+         * defina GOOGLE_OAUTH_STATELESS=true. Em produção, prefira manter false e corrigir sessão/URL.
+         */
+        'stateless' => env('GOOGLE_OAUTH_STATELESS', false),
     ],
 
 ];
