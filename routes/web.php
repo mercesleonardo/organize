@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Support\TicketController;
+use App\Models\Ticket;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -14,9 +15,17 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', 'pages::dashboard')->name('dashboard');
 
+    Route::livewire('notificacoes', 'pages::notifications')->name('notifications.index');
+
+    Route::livewire('suporte/fale-conosco', 'pages::support.ticket-center')->name('support.contact');
+
     Route::post('suporte/chamados', [TicketController::class, 'store'])
         ->middleware(['throttle:support-ticket'])
         ->name('support.tickets.store');
+
+    Route::livewire('suporte/painel', 'pages::support.kanban')
+        ->middleware('can:viewAny,' . Ticket::class)
+        ->name('support.kanban');
 
     Route::livewire('finance/categories', 'pages::finance.categories')->name('finance.categories.index');
     Route::livewire('finance/despesas', 'pages::finance.expenses-index')->name('finance.expenses.index');

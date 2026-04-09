@@ -149,8 +149,6 @@ new #[Title('Dashboard')] class extends Component {
             </a>
         </div>
 
-        <livewire:pages::support.ticket-center />
-
         <div>
             <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <flux:heading size="lg">{{ __('Recent transactions') }}</flux:heading>

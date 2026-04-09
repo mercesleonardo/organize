@@ -11,7 +11,7 @@ test('usuário autenticado pode enviar um chamado', function () {
     $this->post(route('support.tickets.store'), [
         'subject' => 'Dúvida sobre o app',
         'message' => 'Olá, preciso de ajuda com uma informação.',
-    ])->assertRedirect();
+    ])->assertRedirect(route('support.contact'));
 
     expect(Ticket::query()->whereBelongsTo($user)->count())->toBe(1);
 
@@ -31,12 +31,12 @@ test('usuário não pode ter mais de 3 tickets abertos', function () {
 
     $this->actingAs($user);
 
-    $this->from(route('dashboard'))
+    $this->from(route('support.contact'))
         ->post(route('support.tickets.store'), [
             'subject' => 'Novo ticket',
             'message' => 'Mensagem',
         ])
-        ->assertRedirect(route('dashboard'))
+        ->assertRedirect(route('support.contact'))
         ->assertSessionHasErrors(['subject']);
 
     expect(Ticket::query()->whereBelongsTo($user)->count())->toBe(3);

@@ -7,6 +7,24 @@
         <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
+                @php
+                    $unreadNotificationsCount = auth()->user()->unreadNotifications()->count();
+                @endphp
+                <a
+                    href="{{ route('notifications.index') }}"
+                    wire:navigate
+                    class="relative ms-auto inline-flex lg:ms-0"
+                    aria-label="{{ __('Notifications') }}"
+                >
+                    <flux:button variant="ghost" size="sm" icon="bell" class="!px-2" />
+                    @if ($unreadNotificationsCount > 0)
+                        <span
+                            class="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white"
+                        >
+                            {{ $unreadNotificationsCount > 9 ? '9+' : $unreadNotificationsCount }}
+                        </span>
+                    @endif
+                </a>
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
@@ -27,6 +45,14 @@
                     <flux:sidebar.item icon="banknotes" :href="route('investments.goals.index')" :current="request()->routeIs('investments.goals.*')" wire:navigate>
                         {{ __('Investments') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="chat-bubble-left-right" :href="route('support.contact')" :current="request()->routeIs('support.contact')" wire:navigate>
+                        {{ __('Contact us') }}
+                    </flux:sidebar.item>
+                    @can('viewAny', \App\Models\Ticket::class)
+                        <flux:sidebar.item icon="lifebuoy" :href="route('support.kanban')" :current="request()->routeIs('support.kanban')" wire:navigate>
+                            {{ __('Support') }}
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
@@ -38,6 +64,25 @@
         <!-- Mobile User Menu -->
         <flux:header class="lg:hidden">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+
+            @php
+                $mobileUnreadNotificationsCount = auth()->user()->unreadNotifications()->count();
+            @endphp
+            <a
+                href="{{ route('notifications.index') }}"
+                wire:navigate
+                class="relative ms-1 inline-flex"
+                aria-label="{{ __('Notifications') }}"
+            >
+                <flux:button variant="ghost" size="sm" icon="bell" class="!px-2" />
+                @if ($mobileUnreadNotificationsCount > 0)
+                    <span
+                        class="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-medium text-white"
+                    >
+                        {{ $mobileUnreadNotificationsCount > 9 ? '9+' : $mobileUnreadNotificationsCount }}
+                    </span>
+                @endif
+            </a>
 
             <flux:spacer />
 

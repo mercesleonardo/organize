@@ -26,6 +26,8 @@ class TicketController extends Controller
             ]);
         }
 
-        return back()->with('status', 'Chamado enviado com sucesso. Em breve nossa equipe responderá.');
+        return redirect()
+            ->route('support.contact')
+            ->with('status', 'Chamado enviado com sucesso. Em breve nossa equipe responderá.');
     }
 }
