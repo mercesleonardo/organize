@@ -18,6 +18,19 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(LazilyRefreshDatabase::class)
+    ->beforeEach(function (): void {
+        $middleware = [
+            \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+            \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+            \Illuminate\Foundation\Http\Middleware\PreventRequestForgery::class,
+        ];
+
+        foreach ($middleware as $class) {
+            if (class_exists($class)) {
+                $this->withoutMiddleware($class);
+            }
+        }
+    })
     ->in('Feature');
 
 /*

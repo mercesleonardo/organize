@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Support\TicketController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
@@ -12,6 +13,10 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('dashboard', 'pages::dashboard')->name('dashboard');
+
+    Route::post('suporte/chamados', [TicketController::class, 'store'])
+        ->middleware(['throttle:support-ticket'])
+        ->name('support.tickets.store');
 
     Route::livewire('finance/categories', 'pages::finance.categories')->name('finance.categories.index');
     Route::livewire('finance/despesas', 'pages::finance.expenses-index')->name('finance.expenses.index');
