@@ -456,7 +456,7 @@
   "Lottery": "Loteria",
   "Snacks": "Lanches",
   "Baby": "Bebê",
-  "Vegetables": "vegetal",
+  "Vegetables": "Vegetal",
   "Fruit": "Fruta",
   "Context": "Contexto",
   "Salary": "Salário",
@@ -467,5 +467,7 @@
   "Refunds": "Reembolsos",
   "Rental income": "Renda de aluguel",
   "Sales": "Vendas",
-  "Other income": "Outras receitas"
+  "Other income": "Outras receitas",
+  "Icon preview": "Pré-visualização do ícone",
+  "shopping-cart or lucide:carrot": "shopping-cart ou lucide:carrot"
 }

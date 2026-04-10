@@ -116,12 +116,32 @@ new #[Title('New income')] class extends Component {
         <form wire:submit="save" class="space-y-6">
             <flux:field>
                 <flux:label>{{ __('Category') }}</flux:label>
-                <flux:select wire:model="category_id" :placeholder="__('Select…')" :disabled="$this->categories->isEmpty()">
+                <flux:select
+                    wire:model.live="category_id"
+                    :placeholder="__('Select…')"
+                    :disabled="$this->categories->isEmpty()"
+                >
                     @foreach ($this->categories as $cat)
                         <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="category_id" />
+                @if ($this->category_id)
+                    @php
+                        $selectedIncomeCategory = $this->categories->firstWhere('id', $this->category_id);
+                    @endphp
+                    @if ($selectedIncomeCategory)
+                        <div
+                            class="mt-2 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800/50"
+                        >
+                            <x-category-icon
+                                :name="$selectedIncomeCategory->icon"
+                                class="size-5 shrink-0 text-zinc-600 dark:text-zinc-300"
+                            />
+                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $selectedIncomeCategory->name }}</span>
+                        </div>
+                    @endif
+                @endif
             </flux:field>
 
             <flux:field>

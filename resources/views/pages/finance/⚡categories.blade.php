@@ -134,11 +134,18 @@ new #[Title('Categories')] class extends Component {
                     @forelse ($this->categories as $category)
                         <tr wire:key="category-{{ $category->id }}">
                             <td class="px-4 py-3 text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                <div class="flex items-center gap-2">
-                                    @if ($category->color)
-                                        <span class="size-3 rounded-full border border-zinc-300" style="background-color: {{ $category->color }}"></span>
-                                    @endif
-                                    {{ $category->name }}
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-700/70"
+                                    >
+                                        <x-category-icon :name="$category->icon" class="size-5 text-zinc-600 dark:text-zinc-300" />
+                                    </div>
+                                    <div class="flex min-w-0 items-center gap-2">
+                                        @if ($category->color)
+                                            <span class="size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
+                                        @endif
+                                        <span class="truncate">{{ $category->name }}</span>
+                                    </div>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
@@ -176,18 +183,27 @@ new #[Title('Categories')] class extends Component {
                     <div wire:key="category-mobile-{{ $category->id }}" class="p-4">
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
-                                <div class="flex items-center gap-2">
-                                    @if ($category->color)
-                                        <span class="mt-1 size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
-                                    @endif
-                                    <div class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                        {{ $category->name }}
+                                <div class="flex items-start gap-3">
+                                    <div
+                                        class="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-700/70"
+                                    >
+                                        <x-category-icon :name="$category->icon" class="size-5 text-zinc-600 dark:text-zinc-300" />
                                     </div>
-                                </div>
-                                <div class="mt-2">
-                                    <flux:badge size="sm" inset="top bottom">
-                                        {{ $category->type->label() }}
-                                    </flux:badge>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            @if ($category->color)
+                                                <span class="size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
+                                            @endif
+                                            <div class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
+                                                {{ $category->name }}
+                                            </div>
+                                        </div>
+                                        <div class="mt-2">
+                                            <flux:badge size="sm" inset="top bottom">
+                                                {{ $category->type->label() }}
+                                            </flux:badge>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="flex shrink-0 items-center gap-2">
@@ -236,8 +252,18 @@ new #[Title('Categories')] class extends Component {
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:field>
                     <flux:label>{{ __('Icon (optional)') }}</flux:label>
-                    <flux:input wire:model="icon" :placeholder="__('home')" />
-                    <flux:error name="icon" />
+                    <div class="flex flex-wrap items-end gap-3">
+                        <div class="min-w-0 flex-1">
+                            <flux:input wire:model.live="icon" :placeholder="__('shopping-cart or lucide:carrot')" />
+                            <flux:error name="icon" />
+                        </div>
+                        <div
+                            class="flex size-11 shrink-0 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 dark:border-zinc-600 dark:bg-zinc-800"
+                            title="{{ __('Icon preview') }}"
+                        >
+                            <x-category-icon :name="$icon" class="size-6 text-zinc-600 dark:text-zinc-300" />
+                        </div>
+                    </div>
                 </flux:field>
                 <flux:field>
                     <flux:label>{{ __('Color (optional hex)') }}</flux:label>

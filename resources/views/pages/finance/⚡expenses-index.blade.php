@@ -347,12 +347,14 @@ new #[Title('Expenses')] class extends Component {
                                 {{ $transaction->description }}
                             </td>
                             <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
-                                {{ $transaction->category?->name ?? '—' }}
-                                @if ($this->isInvestmentDebit($transaction))
-                                    <flux:badge size="sm" inset="top bottom" color="emerald" class="ms-2">
-                                        {{ __('Investment') }}
-                                    </flux:badge>
-                                @endif
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <x-category-label-inline :category="$transaction->category" />
+                                    @if ($this->isInvestmentDebit($transaction))
+                                        <flux:badge size="sm" inset="top bottom" color="emerald">
+                                            {{ __('Investment') }}
+                                        </flux:badge>
+                                    @endif
+                                </div>
                             </td>
                             <td class="px-4 py-3 text-sm">
                                 <flux:badge size="sm" inset="top bottom" :color="$transaction->status === \App\Enums\TransactionStatus::Paid ? 'green' : 'amber'">
@@ -406,7 +408,9 @@ new #[Title('Expenses')] class extends Component {
                                 <div class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                                     {{ $transaction->date->format('d/m/Y') }}
                                     <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
-                                    {{ $transaction->category?->name ?? '—' }}
+                                    <span class="inline-flex max-w-full align-middle">
+                                        <x-category-label-inline :category="$transaction->category" class="text-xs text-zinc-500 dark:text-zinc-400" />
+                                    </span>
                                     @if ($this->isInvestmentDebit($transaction))
                                         <span class="mx-1 text-zinc-300 dark:text-zinc-700">•</span>
                                         <span class="font-medium text-emerald-700 dark:text-emerald-400">
@@ -479,12 +483,32 @@ new #[Title('Expenses')] class extends Component {
 
             <flux:field>
                 <flux:label>{{ __('Category') }}</flux:label>
-                <flux:select wire:model="edit_category_id" :placeholder="__('Select…')" :disabled="$this->categoriesForEdit->isEmpty()">
+                <flux:select
+                    wire:model.live="edit_category_id"
+                    :placeholder="__('Select…')"
+                    :disabled="$this->categoriesForEdit->isEmpty()"
+                >
                     @foreach ($this->categoriesForEdit as $cat)
                         <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="edit_category_id" />
+                @if ($this->edit_category_id)
+                    @php
+                        $editExpenseCategory = $this->categoriesForEdit->firstWhere('id', $this->edit_category_id);
+                    @endphp
+                    @if ($editExpenseCategory)
+                        <div
+                            class="mt-2 flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-600 dark:bg-zinc-800/50"
+                        >
+                            <x-category-icon
+                                :name="$editExpenseCategory->icon"
+                                class="size-5 shrink-0 text-zinc-600 dark:text-zinc-300"
+                            />
+                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $editExpenseCategory->name }}</span>
+                        </div>
+                    @endif
+                @endif
             </flux:field>
 
             <flux:field>

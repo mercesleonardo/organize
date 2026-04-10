@@ -10,6 +10,10 @@ final class CreateDefaultCategoriesForUserAction
 {
     /**
      * Cria categorias de despesa e receita iniciais para um utilizador recém-registado.
+     *
+     * Campo {@see \App\Models\Category::$icon}:
+     * — nome simples (ex.: `shopping-cart`): ícone Flux / Heroicons publicado na app;
+     * — `lucide:nome-do-icone` (ex.: `lucide:carrot`): ícone da biblioteca Lucide via Blade Icons.
      */
     public function execute(User $user): void
     {
@@ -41,33 +45,33 @@ final class CreateDefaultCategoriesForUserAction
     {
         return [
             ['label' => 'Shopping', 'icon' => 'shopping-cart'],
-            ['label' => 'Food', 'icon' => 'cake'],
+            ['label' => 'Food', 'icon' => 'lucide:utensils-crossed'],
             ['label' => 'Phone', 'icon' => 'device-phone-mobile'],
             ['label' => 'Entertainment', 'icon' => 'microphone'],
             ['label' => 'Education', 'icon' => 'book-open'],
             ['label' => 'Beauty', 'icon' => 'sparkles'],
             ['label' => 'Sports', 'icon' => 'trophy'],
             ['label' => 'Social', 'icon' => 'user-group'],
-            ['label' => 'Transport', 'icon' => 'truck'],
+            ['label' => 'Transport', 'icon' => 'lucide:bus'],
             ['label' => 'Clothing', 'icon' => 'shopping-bag'],
-            ['label' => 'Car', 'icon' => 'rectangle-stack'],
-            ['label' => 'Wine', 'icon' => 'beaker'],
-            ['label' => 'Tobacco', 'icon' => 'minus-circle'],
+            ['label' => 'Car', 'icon' => 'lucide:car'],
+            ['label' => 'Wine', 'icon' => 'lucide:wine'],
+            ['label' => 'Tobacco', 'icon' => 'lucide:cigarette'],
             ['label' => 'Electronics', 'icon' => 'cpu-chip'],
             ['label' => 'Travel', 'icon' => 'paper-airplane'],
             ['label' => 'Health', 'icon' => 'shield-check'],
-            ['label' => 'Pets', 'icon' => 'heart'],
+            ['label' => 'Pets', 'icon' => 'lucide:dog'],
             ['label' => 'Repairs', 'icon' => 'wrench-screwdriver'],
             ['label' => 'Housing', 'icon' => 'paint-brush'],
             ['label' => 'Home', 'icon' => 'home'],
             ['label' => 'Gifts', 'icon' => 'gift'],
-            ['label' => 'Donations', 'icon' => 'hand-raised'],
-            ['label' => 'Lottery', 'icon' => 'ticket'],
-            ['label' => 'Snacks', 'icon' => 'cube'],
-            ['label' => 'Baby', 'icon' => 'face-smile'],
-            ['label' => 'Vegetables', 'icon' => 'leaf'],
-            ['label' => 'Fruit', 'icon' => 'star'],
-            ['label' => 'Context', 'icon' => 'squares-2x2'],
+            ['label' => 'Donations', 'icon' => 'lucide:heart-handshake'],
+            ['label' => 'Lottery', 'icon' => 'lucide:dices'],
+            ['label' => 'Snacks', 'icon' => 'lucide:cookie'],
+            ['label' => 'Baby', 'icon' => 'lucide:baby'],
+            ['label' => 'Vegetables', 'icon' => 'lucide:carrot'],
+            ['label' => 'Fruit', 'icon' => 'lucide:grape'],
+            ['label' => 'Context', 'icon' => 'lucide:nut'],
         ];
     }
 
