@@ -33,7 +33,10 @@ test('usuário pode criar uma categoria pelo Livewire', function () {
         ->call('save')
         ->assertHasNoErrors();
 
-    $category = Category::where('user_id', $user->id)->first();
+    $category = Category::query()
+        ->where('user_id', $user->id)
+        ->where('name', 'Moradia')
+        ->first();
 
     expect($category)->not->toBeNull()
         ->and($category->name)->toBe('Moradia');

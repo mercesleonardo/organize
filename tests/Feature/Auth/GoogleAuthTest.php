@@ -35,7 +35,8 @@ test('callback cria utilizador e autentica', function () {
 
     expect($user)->not->toBeNull()
         ->and($user->google_id)->toBe('google-123')
-        ->and($user->email_verified_at)->not->toBeNull();
+        ->and($user->email_verified_at)->not->toBeNull()
+        ->and($user->categories()->count())->toBe(37);
 
     $this->assertAuthenticatedAs($user);
 });
