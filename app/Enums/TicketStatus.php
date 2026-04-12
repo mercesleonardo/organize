@@ -11,9 +11,9 @@ enum TicketStatus: string
     public function label(): string
     {
         return match ($this) {
-            self::Open       => 'Aberto',
-            self::InProgress => 'Em andamento',
-            self::Resolved   => 'Resolvido',
+            self::Open       => __('Open'),
+            self::InProgress => __('In progress'),
+            self::Resolved   => __('Resolved'),
         };
     }
 }

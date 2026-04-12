@@ -6,7 +6,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Fale conosco')] class extends Component {
+new #[Title('Contact us')] class extends Component {
     public function getStatusMessageProperty(): ?string
     {
         return session('status');

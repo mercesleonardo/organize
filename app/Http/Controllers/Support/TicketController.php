@@ -28,6 +28,6 @@ class TicketController extends Controller
 
         return redirect()
             ->route('support.contact')
-            ->with('status', 'Chamado enviado com sucesso. Em breve nossa equipe responderá.');
+            ->with('status', __('Your ticket was sent successfully. Our team will respond soon.'));
     }
 }

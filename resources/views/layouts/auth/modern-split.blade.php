@@ -98,6 +98,10 @@
 
                     <div class="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900/40 sm:p-8">
                         {{ $slot }}
+
+                        <div class="mt-6 border-t border-zinc-200 pt-5 dark:border-zinc-700">
+                            <x-locale-switcher variant="inline" class="justify-center" />
+                        </div>
                     </div>
                 </div>
             </div>

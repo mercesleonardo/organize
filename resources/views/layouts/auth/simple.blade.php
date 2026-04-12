@@ -14,6 +14,7 @@
                 </a>
                 <div class="flex flex-col gap-6">
                     {{ $slot }}
+                    <x-locale-switcher variant="inline" class="justify-center" />
                 </div>
             </div>
         </div>

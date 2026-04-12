@@ -19,7 +19,7 @@ final class CreateTicketAction
                 ->count();
 
             if ($openCount >= 3) {
-                throw new InvalidArgumentException('Você já possui 3 chamados abertos. Aguarde a resposta do suporte antes de abrir um novo chamado.');
+                throw new InvalidArgumentException(__('You already have 3 open tickets. Please wait for a support reply before opening another one.'));
             }
 
             return Ticket::query()->create([

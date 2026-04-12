@@ -11,7 +11,7 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Suporte — Chamados')] class extends Component
+new #[Title('Support board')] class extends Component
 {
     public bool $showModal = false;
 
@@ -118,7 +118,7 @@ new #[Title('Suporte — Chamados')] class extends Component
         $this->showModal = false;
         $this->editingTicketId = null;
         $this->ticketReply = '';
-        session()->flash('status', 'Resposta salva e chamado marcado como em andamento.');
+        session()->flash('status', __('Support reply saved; ticket marked as in progress.'));
     }
 
     public function saveResolved(ReplyToTicketAction $action): void
@@ -147,15 +147,15 @@ new #[Title('Suporte — Chamados')] class extends Component
         $this->showModal = false;
         $this->editingTicketId = null;
         $this->ticketReply = '';
-        session()->flash('status', 'Chamado respondido e marcado como resolvido.');
+        session()->flash('status', __('Ticket answered and marked as resolved.'));
     }
 }; ?>
 
 <div class="flex flex-col gap-8">
     <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-            <flux:heading size="xl">Painel de atendimento</flux:heading>
-            <flux:text class="mt-1 text-zinc-500">Chamados organizados por status. Clique em um card para responder.</flux:text>
+            <flux:heading size="xl">{{ __('Support board') }}</flux:heading>
+            <flux:text class="mt-1 text-zinc-500">{{ __('Tickets are grouped by status. Click a card to reply.') }}</flux:text>
         </div>
     </div>
 
@@ -167,8 +167,11 @@ new #[Title('Suporte — Chamados')] class extends Component
 
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="flex min-h-[12rem] flex-col gap-3 rounded-2xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-900/40">
-            <flux:heading size="md">Aberto</flux:heading>
-            <flux:text class="text-sm text-zinc-500">{{ $this->openTickets->count() }} chamado(s)</flux:text>
+            <flux:heading size="md">{{ __('Open') }}</flux:heading>
+            <flux:text class="text-sm text-zinc-500">
+                {{ $this->openTickets->count() }}
+                {{ $this->openTickets->count() === 1 ? __('ticket') : __('tickets') }}
+            </flux:text>
             <div class="flex flex-1 flex-col gap-2 overflow-y-auto">
                 @forelse ($this->openTickets as $ticket)
                     <button
@@ -182,14 +185,17 @@ new #[Title('Suporte — Chamados')] class extends Component
                         <flux:text class="mt-1 line-clamp-2 text-xs text-zinc-600 dark:text-zinc-300">{{ $ticket->message }}</flux:text>
                     </button>
                 @empty
-                    <flux:text class="text-sm text-zinc-500">Nenhum chamado aberto.</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('No open tickets.') }}</flux:text>
                 @endforelse
             </div>
         </div>
 
         <div class="flex min-h-[12rem] flex-col gap-3 rounded-2xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-900/40">
-            <flux:heading size="md">Em andamento</flux:heading>
-            <flux:text class="text-sm text-zinc-500">{{ $this->inProgressTickets->count() }} chamado(s)</flux:text>
+            <flux:heading size="md">{{ __('In progress') }}</flux:heading>
+            <flux:text class="text-sm text-zinc-500">
+                {{ $this->inProgressTickets->count() }}
+                {{ $this->inProgressTickets->count() === 1 ? __('ticket') : __('tickets') }}
+            </flux:text>
             <div class="flex flex-1 flex-col gap-2 overflow-y-auto">
                 @forelse ($this->inProgressTickets as $ticket)
                     <button
@@ -203,14 +209,16 @@ new #[Title('Suporte — Chamados')] class extends Component
                         <flux:text class="mt-1 line-clamp-2 text-xs text-zinc-600 dark:text-zinc-300">{{ $ticket->message }}</flux:text>
                     </button>
                 @empty
-                    <flux:text class="text-sm text-zinc-500">Nenhum chamado em andamento.</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('No in-progress tickets.') }}</flux:text>
                 @endforelse
             </div>
         </div>
 
         <div class="flex min-h-[12rem] flex-col gap-3 rounded-2xl border border-zinc-200 bg-zinc-50/80 p-4 dark:border-zinc-700 dark:bg-zinc-900/40">
-            <flux:heading size="md">Resolvido</flux:heading>
-            <flux:text class="text-sm text-zinc-500">Últimos {{ $this->resolvedTickets->count() }}</flux:text>
+            <flux:heading size="md">{{ __('Resolved') }}</flux:heading>
+            <flux:text class="text-sm text-zinc-500">
+                {{ __('Last :count', ['count' => $this->resolvedTickets->count()]) }}
+            </flux:text>
             <div class="flex flex-1 flex-col gap-2 overflow-y-auto">
                 @forelse ($this->resolvedTickets as $ticket)
                     <button
@@ -223,7 +231,7 @@ new #[Title('Suporte — Chamados')] class extends Component
                         <flux:text class="mt-1 text-xs text-zinc-500">{{ $ticket->user?->name ?? '—' }}</flux:text>
                     </button>
                 @empty
-                    <flux:text class="text-sm text-zinc-500">Nenhum chamado resolvido ainda.</flux:text>
+                    <flux:text class="text-sm text-zinc-500">{{ __('No resolved tickets yet.') }}</flux:text>
                 @endforelse
             </div>
         </div>
@@ -237,13 +245,13 @@ new #[Title('Suporte — Chamados')] class extends Component
             </flux:text>
 
             <div class="mt-4 rounded-xl bg-zinc-50 p-3 text-sm text-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-200">
-                <div class="mb-1 text-xs font-medium uppercase text-zinc-500">Mensagem do usuário</div>
+                <div class="mb-1 text-xs font-medium uppercase text-zinc-500">{{ __('User message') }}</div>
                 <div class="whitespace-pre-wrap">{{ $this->editingTicket->message }}</div>
             </div>
 
             <div class="mt-4 flex flex-col gap-2">
                 <flux:field>
-                    <flux:label>Resposta do suporte</flux:label>
+                    <flux:label>{{ __('Support reply') }}</flux:label>
                     <textarea
                         wire:model="ticketReply"
                         rows="6"
@@ -255,13 +263,13 @@ new #[Title('Suporte — Chamados')] class extends Component
 
             <div class="mt-6 flex flex-wrap justify-end gap-2">
                 <flux:modal.close>
-                    <flux:button type="button" variant="ghost">Fechar</flux:button>
+                    <flux:button type="button" variant="ghost">{{ __('Close') }}</flux:button>
                 </flux:modal.close>
                 <flux:button type="button" variant="filled" wire:click="saveInProgress" wire:loading.attr="disabled">
-                    Salvar e em andamento
+                    {{ __('Save as in progress') }}
                 </flux:button>
                 <flux:button type="button" variant="primary" wire:click="saveResolved" wire:loading.attr="disabled">
-                    Salvar e resolver
+                    {{ __('Save and resolve') }}
                 </flux:button>
             </div>
         @endif

@@ -21,7 +21,8 @@
                         <span>{{ config('app.name', 'Laravel') }}</span>
                     </a>
 
-                    <nav class="flex flex-wrap items-center justify-end gap-2 sm:gap-3" aria-label="{{ __('Primary navigation') }}">
+                    <nav class="flex flex-wrap items-center justify-end gap-3 sm:gap-4" aria-label="{{ __('Primary navigation') }}">
+                        <x-locale-switcher variant="inline" class="me-auto sm:me-0" />
                         @auth
                             <flux:button variant="ghost" :href="route('dashboard')" size="sm">
                                 {{ __('Dashboard') }}

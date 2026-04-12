@@ -4,6 +4,7 @@ namespace App\Actions\Fortify;
 
 use App\Concerns\{PasswordValidationRules, ProfileValidationRules};
 use App\Models\User;
+use App\Support\Locale;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 
@@ -28,6 +29,7 @@ class CreateNewUser implements CreatesNewUsers
             'name'     => $input['name'],
             'email'    => $input['email'],
             'password' => $input['password'],
+            'locale'   => Locale::acceptedFromSession(),
         ]);
     }
 }

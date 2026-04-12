@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\Locale;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -41,6 +42,7 @@ class GoogleController extends Controller
                 'email'     => $email,
                 'google_id' => $googleId,
                 'password'  => Str::password(64),
+                'locale'    => Locale::acceptedFromSession(),
             ]);
 
             $user->forceFill(['email_verified_at' => now()])->save();
