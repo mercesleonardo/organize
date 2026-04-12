@@ -1,5 +1,6 @@
 <?php
 
+use App\Concerns\NormalizesMoneyBrFields;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
 use App\Http\Requests\UpdateTransactionRequest;
@@ -16,6 +17,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 new #[Title('Expenses')] class extends Component {
+    use NormalizesMoneyBrFields;
     use WithPagination;
 
     public string $monthFilter = '';
@@ -231,6 +233,8 @@ new #[Title('Expenses')] class extends Component {
             ->firstOrFail();
 
         $this->authorize('update', $transaction);
+
+        $this->normalizeMoneyBrFields('edit_amount');
 
         $this->validate(UpdateTransactionRequest::rulesForEdit());
 
@@ -518,11 +522,12 @@ new #[Title('Expenses')] class extends Component {
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:field>
-                    <flux:label>{{ __('Amount') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="edit_amount" required />
-                    <flux:error name="edit_amount" />
-                </flux:field>
+                <x-money-input
+                    entangled="edit_amount"
+                    :label="__('Amount')"
+                    :placeholder="__('0.00')"
+                    required
+                />
                 <flux:field>
                     <flux:label>{{ __('Date') }}</flux:label>
                     <flux:input type="date" wire:model="edit_date" required />

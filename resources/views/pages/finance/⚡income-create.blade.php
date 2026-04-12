@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\CreateTransactionAction;
+use App\Concerns\NormalizesMoneyBrFields;
 use App\Data\CreateTransactionData;
 use App\Enums\TransactionStatus;
 use App\Enums\TransactionType;
@@ -13,6 +14,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 new #[Title('New income')] class extends Component {
+    use NormalizesMoneyBrFields;
     public ?int $category_id = null;
 
     public string $description = '';
@@ -52,6 +54,8 @@ new #[Title('New income')] class extends Component {
     public function save(): void
     {
         $this->authorize('create', \App\Models\Transaction::class);
+
+        $this->normalizeMoneyBrFields('amount');
 
         $this->validate(StoreTransactionRequest::rulesFor($this->is_installment));
 
@@ -151,11 +155,12 @@ new #[Title('New income')] class extends Component {
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:field>
-                    <flux:label>{{ __('Total amount') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="amount" :placeholder="__('0.00')" required />
-                    <flux:error name="amount" />
-                </flux:field>
+                <x-money-input
+                    entangled="amount"
+                    :label="__('Total amount')"
+                    :placeholder="__('0.00')"
+                    required
+                />
                 <flux:field>
                     <flux:label>{{ __('Date (first installment / single)') }}</flux:label>
                     <flux:input type="date" wire:model="date" required />

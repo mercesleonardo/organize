@@ -1,5 +1,6 @@
 <?php
 
+use App\Concerns\NormalizesMoneyBrFields;
 use App\Http\Requests\StoreInvestmentGoalRequest;
 use App\Models\InvestmentGoal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -10,6 +11,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 new #[Title('Investments')] class extends Component {
+    use NormalizesMoneyBrFields;
     use WithPagination;
 
     public bool $showCreateModal = false;
@@ -54,6 +56,8 @@ new #[Title('Investments')] class extends Component {
     public function save()
     {
         $this->authorize('create', InvestmentGoal::class);
+
+        $this->normalizeMoneyBrFields('target_amount');
 
         $this->validate((new StoreInvestmentGoalRequest())->rules());
 
@@ -180,11 +184,12 @@ new #[Title('Investments')] class extends Component {
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:field>
-                    <flux:label>{{ __('Target amount') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="target_amount" required />
-                    <flux:error name="target_amount" />
-                </flux:field>
+                <x-money-input
+                    entangled="target_amount"
+                    :label="__('Target amount')"
+                    :placeholder="__('0.00')"
+                    required
+                />
 
                 <flux:field>
                     <flux:label>{{ __('Start date') }}</flux:label>

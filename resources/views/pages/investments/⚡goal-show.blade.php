@@ -1,5 +1,6 @@
 <?php
 
+use App\Concerns\NormalizesMoneyBrFields;
 use App\Http\Requests\StoreInvestmentContributionRequest;
 use App\Http\Requests\UpdateInvestmentGoalRequest;
 use App\Models\Category;
@@ -17,6 +18,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 new #[Title('Investment goal')] class extends Component {
+    use NormalizesMoneyBrFields;
     use WithPagination;
 
     public InvestmentGoal $goal;
@@ -109,6 +111,8 @@ new #[Title('Investment goal')] class extends Component {
     {
         $this->authorize('update', $this->goal);
 
+        $this->normalizeMoneyBrFields('edit_target_amount');
+
         $this->validate((new UpdateInvestmentGoalRequest())->rules());
 
         $this->goal->update([
@@ -135,6 +139,8 @@ new #[Title('Investment goal')] class extends Component {
     {
         $this->authorize('create', InvestmentContribution::class);
         $this->authorize('update', $this->goal);
+
+        $this->normalizeMoneyBrFields('amount');
 
         $this->validate((new StoreInvestmentContributionRequest())->rules());
 
@@ -217,6 +223,8 @@ new #[Title('Investment goal')] class extends Component {
             ->firstOrFail();
 
         $this->authorize('update', $contribution);
+
+        $this->normalizeMoneyBrFields('edit_amount');
 
         $rules = (new StoreInvestmentContributionRequest())->rules();
         $rules = array_combine(
@@ -466,10 +474,14 @@ new #[Title('Investment goal')] class extends Component {
                 <flux:text class="mt-2">{{ __('Add values over time and track your progress.') }}</flux:text>
 
                 <form wire:submit="addContribution" class="mt-6 grid gap-4 sm:grid-cols-3">
-                    <flux:field class="sm:col-span-1">
-                        <flux:label>{{ __('Amount') }}</flux:label>
-                        <flux:input type="number" step="0.01" min="0" wire:model="amount" required />
-                    </flux:field>
+                    <div class="sm:col-span-1">
+                        <x-money-input
+                            entangled="amount"
+                            :label="__('Amount')"
+                            :placeholder="__('0.00')"
+                            required
+                        />
+                    </div>
 
                     <flux:field class="sm:col-span-1">
                         <flux:label>{{ __('Date') }}</flux:label>
@@ -482,14 +494,6 @@ new #[Title('Investment goal')] class extends Component {
                         <flux:input wire:model="note" />
                         <flux:error name="note" />
                     </flux:field>
-
-                    @if ($errors->has('amount'))
-                        <div class="sm:col-span-3">
-                            <flux:callout icon="exclamation-triangle" color="red">
-                                <flux:callout.text>{{ $errors->first('amount') }}</flux:callout.text>
-                            </flux:callout>
-                        </div>
-                    @endif
 
                     <div class="sm:col-span-3 flex justify-end">
                         <flux:button variant="primary" type="submit" icon="plus">
@@ -666,11 +670,12 @@ new #[Title('Investment goal')] class extends Component {
             </flux:field>
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:field>
-                    <flux:label>{{ __('Target amount') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="edit_target_amount" required />
-                    <flux:error name="edit_target_amount" />
-                </flux:field>
+                <x-money-input
+                    entangled="edit_target_amount"
+                    :label="__('Target amount')"
+                    :placeholder="__('0.00')"
+                    required
+                />
 
                 <flux:field>
                     <flux:label>{{ __('Start date') }}</flux:label>
@@ -701,11 +706,12 @@ new #[Title('Investment goal')] class extends Component {
             </div>
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:field>
-                    <flux:label>{{ __('Amount') }}</flux:label>
-                    <flux:input type="number" step="0.01" min="0" wire:model="edit_amount" required />
-                    <flux:error name="edit_amount" />
-                </flux:field>
+                <x-money-input
+                    entangled="edit_amount"
+                    :label="__('Amount')"
+                    :placeholder="__('0.00')"
+                    required
+                />
 
                 <flux:field>
                     <flux:label>{{ __('Date') }}</flux:label>

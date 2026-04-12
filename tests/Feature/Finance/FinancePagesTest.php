@@ -83,6 +83,33 @@ test('usuário pode registrar uma despesa pelo Livewire', function () {
     )->toBe(1);
 });
 
+test('usuário pode registrar despesa com montante em formato brasileiro', function () {
+    $user = User::factory()->create();
+    seedPaidIncome($user, '5000.00');
+    $category = Category::query()->platform()->where('type', TransactionType::Expense)->firstOrFail();
+
+    $this->actingAs($user);
+
+    Livewire::test('pages::finance.expense-create')
+        ->set('category_id', $category->id)
+        ->set('description', 'Compra formatada')
+        ->set('amount', '1.234,56')
+        ->set('date', '2026-04-05')
+        ->set('status', 'paid')
+        ->set('is_installment', false)
+        ->call('save')
+        ->assertHasNoErrors();
+
+    $transaction = Transaction::query()
+        ->where('user_id', $user->id)
+        ->where('type', TransactionType::Expense)
+        ->where('description', 'Compra formatada')
+        ->first();
+
+    expect($transaction)->not->toBeNull()
+        ->and((string) $transaction->amount)->toBe('1234.56');
+});
+
 test('não registra despesa paga pelo Livewire sem saldo suficiente', function () {
     $user     = User::factory()->create();
     $category = Category::query()->platform()->where('type', TransactionType::Expense)->firstOrFail();
