@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::livewire('finance/despesas/criar', 'pages::finance.expense-create')->name('finance.expenses.create');
     Route::livewire('finance/receitas', 'pages::finance.incomes-index')->name('finance.incomes.index');
     Route::livewire('finance/receitas/criar', 'pages::finance.income-create')->name('finance.incomes.create');
+    Route::livewire('finance/insights', 'pages::finance.insights')->name('finance.insights');
 
     Route::livewire('investments', 'pages::investments.goals-index')->name('investments.goals.index');
     Route::livewire('investments/{goal}', 'pages::investments.goal-show')->name('investments.goals.show');

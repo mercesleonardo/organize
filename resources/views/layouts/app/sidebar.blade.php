@@ -44,6 +44,9 @@
                     <flux:sidebar.item icon="arrow-trending-up" :href="route('finance.incomes.index')" :current="request()->routeIs('finance.incomes.*')" wire:navigate>
                         {{ __('Incomes') }}
                     </flux:sidebar.item>
+                    <flux:sidebar.item icon="chart-bar-square" :href="route('finance.insights')" :current="request()->routeIs('finance.insights')" wire:navigate>
+                        {{ __('Financial insights') }}
+                    </flux:sidebar.item>
                     <flux:sidebar.item icon="banknotes" :href="route('investments.goals.index')" :current="request()->routeIs('investments.goals.*')" wire:navigate>
                         {{ __('Investments') }}
                     </flux:sidebar.item>

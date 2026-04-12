@@ -10,6 +10,7 @@ test('visitantes são redirecionados ao login nas rotas de finanças', function 
     $this->get(route('finance.expenses.create'))->assertRedirect(route('login'));
     $this->get(route('finance.incomes.index'))->assertRedirect(route('login'));
     $this->get(route('finance.incomes.create'))->assertRedirect(route('login'));
+    $this->get(route('finance.insights'))->assertRedirect(route('login'));
 });
 
 test('utilizador comum não acede à gestão de categorias', function () {
@@ -33,6 +34,7 @@ test('utilizador autenticado acede às páginas de lançamentos', function () {
     $this->get(route('finance.expenses.create'))->assertOk();
     $this->get(route('finance.incomes.index'))->assertOk();
     $this->get(route('finance.incomes.create'))->assertOk();
+    $this->get(route('finance.insights'))->assertOk();
 });
 
 test('administrador pode criar uma categoria pelo Livewire', function () {
