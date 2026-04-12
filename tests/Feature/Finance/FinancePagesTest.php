@@ -12,18 +12,31 @@ test('visitantes são redirecionados ao login nas rotas de finanças', function 
     $this->get(route('finance.incomes.create'))->assertRedirect(route('login'));
 });
 
-test('usuários autenticados acessam as páginas de finanças', function () {
+test('utilizador comum não acede à gestão de categorias', function () {
     $this->actingAs(User::factory()->create());
 
+    $this->get(route('finance.categories.index'))->assertForbidden();
+});
+
+test('administrador ou suporte acede à página de categorias', function () {
+    $this->actingAs(User::factory()->admin()->create());
     $this->get(route('finance.categories.index'))->assertOk();
+
+    $this->actingAs(User::factory()->support()->create());
+    $this->get(route('finance.categories.index'))->assertOk();
+});
+
+test('utilizador autenticado acede às páginas de lançamentos', function () {
+    $this->actingAs(User::factory()->create());
+
     $this->get(route('finance.expenses.index'))->assertOk();
     $this->get(route('finance.expenses.create'))->assertOk();
     $this->get(route('finance.incomes.index'))->assertOk();
     $this->get(route('finance.incomes.create'))->assertOk();
 });
 
-test('usuário pode criar uma categoria pelo Livewire', function () {
-    $user = User::factory()->create();
+test('administrador pode criar uma categoria pelo Livewire', function () {
+    $user = User::factory()->admin()->create();
     $this->actingAs($user);
 
     Livewire::test('pages::finance.categories')
@@ -34,7 +47,7 @@ test('usuário pode criar uma categoria pelo Livewire', function () {
         ->assertHasNoErrors();
 
     $category = Category::query()
-        ->where('user_id', $user->id)
+        ->whereNull('user_id')
         ->where('name', 'Moradia')
         ->first();
 
@@ -45,10 +58,7 @@ test('usuário pode criar uma categoria pelo Livewire', function () {
 test('usuário pode registrar uma despesa pelo Livewire', function () {
     $user = User::factory()->create();
     seedPaidIncome($user, '200.00');
-    $category = Category::factory()->create([
-        'user_id' => $user->id,
-        'type'    => TransactionType::Expense,
-    ]);
+    $category = Category::query()->platform()->where('type', TransactionType::Expense)->firstOrFail();
 
     $this->actingAs($user);
 
@@ -73,10 +83,7 @@ test('usuário pode registrar uma despesa pelo Livewire', function () {
 
 test('não registra despesa paga pelo Livewire sem saldo suficiente', function () {
     $user     = User::factory()->create();
-    $category = Category::factory()->create([
-        'user_id' => $user->id,
-        'type'    => TransactionType::Expense,
-    ]);
+    $category = Category::query()->platform()->where('type', TransactionType::Expense)->firstOrFail();
 
     $this->actingAs($user);
 
@@ -100,10 +107,7 @@ test('não registra despesa paga pelo Livewire sem saldo suficiente', function (
 
 test('usuário pode registrar despesa parcelada', function () {
     $user     = User::factory()->create();
-    $category = Category::factory()->create([
-        'user_id' => $user->id,
-        'type'    => TransactionType::Expense,
-    ]);
+    $category = Category::query()->platform()->where('type', TransactionType::Expense)->firstOrFail();
 
     $this->actingAs($user);
 

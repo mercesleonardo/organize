@@ -8,27 +8,27 @@ class CategoryPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->isAdminOrSupport();
     }
 
     public function view(User $user, Category $category): bool
     {
-        return $user->id === $category->user_id;
+        return $category->user_id === null || $user->id === $category->user_id;
     }
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->isAdminOrSupport();
     }
 
     public function update(User $user, Category $category): bool
     {
-        return $user->id === $category->user_id;
+        return $user->isAdminOrSupport();
     }
 
     public function delete(User $user, Category $category): bool
     {
-        return $user->id === $category->user_id;
+        return $user->isAdminOrSupport();
     }
 
     public function restore(User $user, Category $category): bool

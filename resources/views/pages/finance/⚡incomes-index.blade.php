@@ -101,8 +101,8 @@ new #[Title('Incomes')] class extends Component {
      */
     public function getCategoriesForEditProperty()
     {
-        return Auth::user()
-            ->categories()
+        return Category::query()
+            ->platform()
             ->where('type', TransactionType::Income)
             ->orderBy('name')
             ->get();
@@ -204,7 +204,7 @@ new #[Title('Incomes')] class extends Component {
 
         $category = Category::query()
             ->whereKey($this->edit_category_id)
-            ->whereBelongsTo(Auth::user())
+            ->whereNull('user_id')
             ->firstOrFail();
 
         if ($category->type !== TransactionType::Income) {
@@ -427,7 +427,7 @@ new #[Title('Incomes')] class extends Component {
                     :disabled="$this->categoriesForEdit->isEmpty()"
                 >
                     @foreach ($this->categoriesForEdit as $cat)
-                        <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
+                        <flux:select.option :value="$cat->id">{{ $cat->label() }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="edit_category_id" />
@@ -443,7 +443,7 @@ new #[Title('Incomes')] class extends Component {
                                 :name="$editIncomeCategory->icon"
                                 class="size-5 shrink-0 text-zinc-600 dark:text-zinc-300"
                             />
-                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $editIncomeCategory->name }}</span>
+                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $editIncomeCategory->label() }}</span>
                         </div>
                     @endif
                 @endif

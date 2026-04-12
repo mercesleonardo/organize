@@ -103,8 +103,8 @@ new #[Title('Expenses')] class extends Component {
      */
     public function getCategoriesForEditProperty()
     {
-        return Auth::user()
-            ->categories()
+        return Category::query()
+            ->platform()
             ->where('type', TransactionType::Expense)
             ->orderBy('name')
             ->get();
@@ -129,8 +129,8 @@ new #[Title('Expenses')] class extends Component {
             ->leftJoin('categories as c', 'transactions.category_id', '=', 'c.id')
             ->addSelect('transactions.*')
             ->orderByRaw(
-                'case when c.name in (?, ?) then 0 else 1 end',
-                ['Investments', 'Investimentos'],
+                'case when c.name = ? then 0 else 1 end',
+                ['Investments'],
             );
 
         if ($this->monthFilter !== '') {
@@ -163,7 +163,7 @@ new #[Title('Expenses')] class extends Component {
     {
         $categoryName = $transaction->category?->name ?? '';
 
-        if (! in_array($categoryName, ['Investments', 'Investimentos'], true)) {
+        if ($categoryName !== 'Investments') {
             return false;
         }
 
@@ -236,7 +236,7 @@ new #[Title('Expenses')] class extends Component {
 
         $category = Category::query()
             ->whereKey($this->edit_category_id)
-            ->whereBelongsTo(Auth::user())
+            ->whereNull('user_id')
             ->firstOrFail();
 
         if ($category->type !== TransactionType::Expense) {
@@ -489,7 +489,7 @@ new #[Title('Expenses')] class extends Component {
                     :disabled="$this->categoriesForEdit->isEmpty()"
                 >
                     @foreach ($this->categoriesForEdit as $cat)
-                        <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
+                        <flux:select.option :value="$cat->id">{{ $cat->label() }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="edit_category_id" />
@@ -505,7 +505,7 @@ new #[Title('Expenses')] class extends Component {
                                 :name="$editExpenseCategory->icon"
                                 class="size-5 shrink-0 text-zinc-600 dark:text-zinc-300"
                             />
-                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $editExpenseCategory->name }}</span>
+                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $editExpenseCategory->label() }}</span>
                         </div>
                     @endif
                 @endif

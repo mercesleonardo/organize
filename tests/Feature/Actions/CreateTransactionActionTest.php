@@ -11,7 +11,7 @@ test('cria uma transação avulsa com uma parcela', function () {
     $user = User::factory()->create();
     seedPaidIncome($user, '100.00');
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 
@@ -40,7 +40,7 @@ test('cria uma transação avulsa com uma parcela', function () {
 test('cria transação mestre e parcelas com vínculo e datas mensais', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 
@@ -76,18 +76,13 @@ test('cria transação mestre e parcelas com vínculo e datas mensais', function
         ->and($collection[2]->date->format('Y-m-d'))->toBe('2026-06-05');
 });
 
-test('falha quando a categoria não pertence ao usuário', function () {
-    $owner    = User::factory()->create();
-    $other    = User::factory()->create();
-    $category = Category::factory()->create([
-        'user_id' => $other->id,
-        'type'    => TransactionType::Expense,
-    ]);
+test('falha quando o id da categoria não existe', function () {
+    $owner = User::factory()->create();
 
     $action = app(CreateTransactionAction::class);
     $action->execute(new CreateTransactionData(
         user: $owner,
-        categoryId: $category->id,
+        categoryId: 9_999_999,
         description: 'X',
         amount: '10.00',
         date: '2026-04-05',
@@ -99,7 +94,7 @@ test('falha quando a categoria não pertence ao usuário', function () {
 test('falha quando o tipo da categoria difere do tipo da transação', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Income,
     ]);
 
@@ -118,7 +113,7 @@ test('falha quando o tipo da categoria difere do tipo da transação', function 
 test('rejeita despesa paga sem saldo suficiente', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 
@@ -140,7 +135,7 @@ test('permite despesa paga quando há saldo suficiente', function () {
     $user = User::factory()->create();
     seedPaidIncome($user, '50.00');
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 

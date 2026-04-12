@@ -2,6 +2,7 @@
 
 use App\Enums\{TransactionStatus, TransactionType};
 use App\Models\{Category, Transaction, User};
+use Database\Seeders\GlobalCategoriesSeeder;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Tests\TestCase;
 
@@ -30,6 +31,8 @@ pest()->extend(TestCase::class)
                 $this->withoutMiddleware($class);
             }
         }
+
+        $this->seed(GlobalCategoriesSeeder::class);
     })
     ->in('Feature');
 
@@ -65,7 +68,7 @@ expect()->extend('toBeOne', function () {
 function seedPaidIncome(User $user, string $amount): void
 {
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Income,
     ]);
 

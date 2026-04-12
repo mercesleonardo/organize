@@ -1,23 +1,16 @@
 <?php
 
-use App\Actions\Finance\CreateDefaultCategoriesForUserAction;
 use App\Enums\TransactionType;
-use App\Models\User;
+use App\Models\{Category, User};
 
-test('novo utilizador recebe categorias de despesa e receita ao criar conta', function () {
-    $user = User::factory()->create();
-
-    expect($user->categories()->count())->toBe(37)
-        ->and($user->categories()->where('type', TransactionType::Expense)->count())->toBe(28)
-        ->and($user->categories()->where('type', TransactionType::Income)->count())->toBe(9);
+test('categorias de plataforma ficam disponíveis após o seeder', function (): void {
+    expect(Category::query()->whereNull('user_id')->count())->toBe(17)
+        ->and(Category::query()->whereNull('user_id')->where('type', TransactionType::Expense)->count())->toBe(10)
+        ->and(Category::query()->whereNull('user_id')->where('type', TransactionType::Income)->count())->toBe(7);
 });
 
-test('CreateDefaultCategoriesForUserAction pode ser executada sem o observer', function () {
-    $user = User::withoutEvents(fn () => User::factory()->create());
+test('novo utilizador não possui categorias próprias na relação', function (): void {
+    $user = User::factory()->create();
 
     expect($user->categories()->count())->toBe(0);
-
-    app(CreateDefaultCategoriesForUserAction::class)->execute($user);
-
-    expect($user->categories()->count())->toBe(37);
 });

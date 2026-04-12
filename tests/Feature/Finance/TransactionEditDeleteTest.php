@@ -7,7 +7,7 @@ use Livewire\Livewire;
 test('usuário pode editar uma despesa na listagem', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
     $transaction = Transaction::factory()->create([
@@ -35,7 +35,7 @@ test('usuário pode editar uma despesa na listagem', function () {
 test('não altera despesa para pago na edição sem saldo suficiente', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
     $transaction = Transaction::factory()->create([
@@ -76,7 +76,7 @@ test('usuário pode excluir uma despesa na listagem', function () {
 test('excluir transação mestre remove parcelas filhas', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 
@@ -111,7 +111,7 @@ test('excluir transação mestre remove parcelas filhas', function () {
 
 test('filtro por mês restringe despesas', function () {
     $user     = User::factory()->create();
-    $category = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $category = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
 
     Transaction::factory()->create([
         'user_id'     => $user->id,
@@ -138,7 +138,7 @@ test('filtro por mês restringe despesas', function () {
 
 test('usuário pode marcar receita como recebida', function () {
     $user        = User::factory()->create();
-    $category    = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $category    = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
     $transaction = Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $category->id,
@@ -159,7 +159,7 @@ test('usuário pode marcar receita como recebida', function () {
 test('usuário pode marcar despesa como paga', function () {
     $user = User::factory()->create();
     seedPaidIncome($user, '100.00');
-    $category    = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $category    = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
     $transaction = Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $category->id,
@@ -180,7 +180,7 @@ test('usuário pode marcar despesa como paga', function () {
 
 test('não marca despesa como paga sem saldo suficiente', function () {
     $user        = User::factory()->create();
-    $category    = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $category    = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
     $transaction = Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $category->id,
@@ -202,7 +202,7 @@ test('não marca despesa como paga sem saldo suficiente', function () {
 test('marcar despesa como paga atualiza o resumo na listagem', function () {
     $user = User::factory()->create();
     seedPaidIncome($user, '50.00');
-    $category    = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $category    = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
     $transaction = Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $category->id,
@@ -228,7 +228,7 @@ test('marcar despesa como paga atualiza o resumo na listagem', function () {
 
 test('marcar receita como recebida atualiza o resumo na listagem', function () {
     $user        = User::factory()->create();
-    $category    = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $category    = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
     $transaction = Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $category->id,

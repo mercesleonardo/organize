@@ -87,9 +87,11 @@ new #[Title('Dashboard')] class extends Component {
                 <flux:button variant="filled" :href="route('finance.incomes.create')" icon="plus" wire:navigate>
                     {{ __('New income') }}
                 </flux:button>
-                <flux:button variant="ghost" :href="route('finance.categories.index')" icon="folder" wire:navigate>
-                    {{ __('Categories') }}
-                </flux:button>
+                @can('viewAny', \App\Models\Category::class)
+                    <flux:button variant="ghost" :href="route('finance.categories.index')" icon="folder" wire:navigate>
+                        {{ __('Categories') }}
+                    </flux:button>
+                @endcan
             </div>
         </div>
 
@@ -180,7 +182,7 @@ new #[Title('Dashboard')] class extends Component {
                                     {{ $transaction->description }}
                                 </td>
                                 <td class="px-4 py-3 text-sm text-zinc-600 dark:text-zinc-300">
-                                    {{ $transaction->category?->name ?? '—' }}
+                                    {{ $transaction->category?->label() ?? '—' }}
                                 </td>
                                 <td class="whitespace-nowrap px-4 py-3 text-end text-sm font-medium tabular-nums text-zinc-900 dark:text-zinc-100">
                                     {{ number_format((float) $transaction->amount, 2, ',', '.') }}

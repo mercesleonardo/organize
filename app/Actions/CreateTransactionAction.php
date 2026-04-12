@@ -32,7 +32,6 @@ final class CreateTransactionAction
         return DB::transaction(function () use ($data) {
             $category = Category::query()
                 ->whereKey($data->categoryId)
-                ->whereBelongsTo($data->user)
                 ->firstOrFail();
 
             if ($category->type !== $data->type) {

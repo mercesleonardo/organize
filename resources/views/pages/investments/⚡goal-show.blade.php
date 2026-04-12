@@ -152,9 +152,9 @@ new #[Title('Investment goal')] class extends Component {
         DB::transaction(function () use ($user, $amount): void {
             $category = Category::query()->firstOrCreate(
                 [
-                    'user_id' => $user->id,
+                    'user_id' => null,
                     'type' => TransactionType::Expense,
-                    'name' => __('Investments'),
+                    'name' => 'Investments',
                 ],
                 [
                     'icon' => 'banknotes',
@@ -255,9 +255,9 @@ new #[Title('Investment goal')] class extends Component {
             if ($debit === null) {
                 $category = Category::query()->firstOrCreate(
                     [
-                        'user_id' => $user->id,
+                        'user_id' => null,
                         'type' => TransactionType::Expense,
-                        'name' => __('Investments'),
+                        'name' => 'Investments',
                     ],
                     [
                         'icon' => 'banknotes',

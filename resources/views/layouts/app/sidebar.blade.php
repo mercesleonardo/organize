@@ -33,9 +33,11 @@
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
-                    <flux:sidebar.item icon="tag" :href="route('finance.categories.index')" :current="request()->routeIs('finance.categories.index')" wire:navigate>
-                        {{ __('Categories') }}
-                    </flux:sidebar.item>
+                    @can('viewAny', \App\Models\Category::class)
+                        <flux:sidebar.item icon="tag" :href="route('finance.categories.index')" :current="request()->routeIs('finance.categories.index')" wire:navigate>
+                            {{ __('Categories') }}
+                        </flux:sidebar.item>
+                    @endcan
                     <flux:sidebar.item icon="arrow-trending-down" :href="route('finance.expenses.index')" :current="request()->routeIs('finance.expenses.*')" wire:navigate>
                         {{ __('Expenses') }}
                     </flux:sidebar.item>

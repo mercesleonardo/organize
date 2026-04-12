@@ -28,5 +28,5 @@ test('new users can register', function () {
 
     $user = User::query()->where('email', 'test@example.com')->firstOrFail();
 
-    expect($user->categories()->count())->toBe(37);
+    expect($user->categories()->count())->toBe(0);
 });

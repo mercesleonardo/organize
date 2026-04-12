@@ -66,6 +66,8 @@ class User extends Authenticatable
     }
 
     /**
+     * Categorias pessoais (legado). As categorias de finanças são globais ({@see Category::scopePlatform}).
+     *
      * @return HasMany<Category, $this>
      */
     public function categories(): HasMany

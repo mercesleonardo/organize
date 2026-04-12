@@ -35,15 +35,15 @@ new #[Title('New expense')] class extends Component {
         $this->date = now()->format('Y-m-d');
         $this->status = TransactionStatus::Pending->value;
 
-        $first = Auth::user()->categories()->where('type', TransactionType::Expense)->orderBy('name')->first();
+        $first = Category::query()->platform()->where('type', TransactionType::Expense)->orderBy('name')->first();
         $this->category_id = $first?->id;
     }
 
     #[Computed]
     public function categories()
     {
-        return Auth::user()
-            ->categories()
+        return Category::query()
+            ->platform()
             ->where('type', TransactionType::Expense)
             ->orderBy('name')
             ->get();
@@ -57,7 +57,7 @@ new #[Title('New expense')] class extends Component {
 
         $category = Category::query()
             ->whereKey($this->category_id)
-            ->whereBelongsTo(Auth::user())
+            ->whereNull('user_id')
             ->firstOrFail();
 
         if ($category->type !== TransactionType::Expense) {
@@ -104,10 +104,10 @@ new #[Title('New expense')] class extends Component {
 
         @if ($this->categories->isEmpty())
             <flux:callout icon="exclamation-triangle" color="amber">
-                <flux:callout.text>{{ __('Create an expense category before adding a transaction.') }}</flux:callout.text>
+                <flux:callout.text>{{ __('No expense categories are available yet. Please contact support.') }}</flux:callout.text>
                 <x-slot name="actions">
-                    <flux:button :href="route('finance.categories.index')" variant="primary" size="sm" wire:navigate>
-                        {{ __('Go to categories') }}
+                    <flux:button :href="route('support.contact')" variant="primary" size="sm" wire:navigate>
+                        {{ __('Contact us') }}
                     </flux:button>
                 </x-slot>
             </flux:callout>
@@ -122,7 +122,7 @@ new #[Title('New expense')] class extends Component {
                     :disabled="$this->categories->isEmpty()"
                 >
                     @foreach ($this->categories as $cat)
-                        <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
+                        <flux:select.option :value="$cat->id">{{ $cat->label() }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:error name="category_id" />
@@ -138,7 +138,7 @@ new #[Title('New expense')] class extends Component {
                                 :name="$selectedExpenseCategory->icon"
                                 class="size-5 shrink-0 text-zinc-600 dark:text-zinc-300"
                             />
-                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $selectedExpenseCategory->name }}</span>
+                            <span class="text-sm text-zinc-600 dark:text-zinc-400">{{ $selectedExpenseCategory->label() }}</span>
                         </div>
                     @endif
                 @endif

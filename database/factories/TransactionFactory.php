@@ -21,8 +21,15 @@ class TransactionFactory extends Factory
         return [
             'user_id'     => User::factory(),
             'category_id' => function (array $attributes) {
+                $userId = $attributes['user_id'];
+
+                if ($userId instanceof \Illuminate\Database\Eloquent\Model) {
+                    $userId = $userId->getKey();
+                }
+
                 return Category::factory()->create([
-                    'user_id' => $attributes['user_id'],
+                    'user_id' => null,
+                    'name'    => 'Cat ' . $userId . '-' . uniqid(),
                     'type'    => $attributes['type'] ?? TransactionType::Expense,
                 ])->id;
             },

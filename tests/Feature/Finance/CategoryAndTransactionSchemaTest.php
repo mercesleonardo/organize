@@ -3,17 +3,15 @@
 use App\Enums\{TransactionStatus, TransactionType};
 use App\Models\{Category, Transaction, User};
 
-test('category belongs to user and enforces unique name per type', function () {
-    $user = User::factory()->create();
-
+test('categoria global permite o mesmo nome em tipos diferentes', function () {
     $a = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'name'    => 'Moradia',
         'type'    => TransactionType::Expense,
     ]);
 
     $b = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'name'    => 'Moradia',
         'type'    => TransactionType::Income,
     ]);
@@ -22,16 +20,17 @@ test('category belongs to user and enforces unique name per type', function () {
         ->and($b->type)->toBe(TransactionType::Income);
 });
 
-test('transaction factory creates category for same user', function () {
+test('transação usa categoria de plataforma', function () {
     $transaction = Transaction::factory()->create();
 
-    expect($transaction->user_id)->toBe($transaction->category->user_id);
+    expect($transaction->category->user_id)->toBeNull()
+        ->and($transaction->user_id)->not->toBeNull();
 });
 
 test('installment children link to parent transaction', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 

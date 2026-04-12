@@ -7,7 +7,7 @@
         >
             <x-category-icon :name="$category->icon" class="size-4 text-zinc-600 dark:text-zinc-300" />
         </div>
-        <span class="min-w-0 truncate">{{ $category->name }}</span>
+        <span class="min-w-0 truncate">{{ $category->label() }}</span>
     </div>
 @else
     <span {{ $attributes }}>—</span>

@@ -32,7 +32,7 @@ class StoreTransactionRequest extends FormRequest
             'category_id' => [
                 'required',
                 'integer',
-                Rule::exists('categories', 'id')->where('user_id', auth()->id()),
+                Rule::exists('categories', 'id')->whereNull('user_id'),
             ],
             'description'       => ['required', 'string', 'max:255'],
             'amount'            => ['required', 'numeric', 'min:0.01', 'max:999999999.99'],

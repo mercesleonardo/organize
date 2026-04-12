@@ -36,7 +36,7 @@ class UpdateTransactionRequest extends FormRequest
             'edit_category_id' => [
                 'required',
                 'integer',
-                Rule::exists('categories', 'id')->where('user_id', auth()->id()),
+                Rule::exists('categories', 'id')->whereNull('user_id'),
             ],
             'edit_description' => ['required', 'string', 'max:255'],
             'edit_amount'      => ['required', 'numeric', 'min:0.01', 'max:999999999.99'],

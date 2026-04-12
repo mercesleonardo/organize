@@ -17,7 +17,7 @@
         <flux:select wire:model.live="categoryFilter">
             <flux:select.option value="">{{ __('All categories') }}</flux:select.option>
             @foreach ($categories as $cat)
-                <flux:select.option :value="$cat->id">{{ $cat->name }}</flux:select.option>
+                <flux:select.option :value="$cat->id">{{ $cat->label() }}</flux:select.option>
             @endforeach
         </flux:select>
     </flux:field>

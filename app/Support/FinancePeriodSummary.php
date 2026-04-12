@@ -90,7 +90,7 @@ final class FinancePeriodSummary
             ->where('transactions.type', TransactionType::Expense)
             ->where('transactions.status', TransactionStatus::Paid)
             ->leftJoin('categories as c', 'transactions.category_id', '=', 'c.id')
-            ->whereIn('c.name', ['Investments', 'Investimentos'])
+            ->whereIn('c.name', ['Investments'])
             ->where(function (Builder $q): void {
                 $q
                     ->where('transactions.description', 'like', 'Investment contribution:%')

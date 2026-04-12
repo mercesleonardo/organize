@@ -44,7 +44,6 @@ class UpdateCategoryRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('categories')
-                    ->where('user_id', $category->user_id)
                     ->where('type', $type)
                     ->ignore($category->id),
             ],

@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use App\Models\{Transaction, User};
-use App\Observers\{TransactionObserver, UserObserver};
+use App\Observers\TransactionObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
@@ -32,7 +32,6 @@ class AppServiceProvider extends ServiceProvider
         $this->configureAuthorization();
 
         Transaction::observe(TransactionObserver::class);
-        User::observe(UserObserver::class);
     }
 
     /**

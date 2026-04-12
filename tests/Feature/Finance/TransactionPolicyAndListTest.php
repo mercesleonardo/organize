@@ -2,18 +2,17 @@
 
 use App\Enums\{TransactionStatus, TransactionType};
 use App\Models\{Category, Transaction, User};
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Livewire;
 
-test('usuário não pode excluir categoria de outro usuário', function () {
-    $owner    = User::factory()->create();
-    $intruso  = User::factory()->create();
-    $category = Category::factory()->create(['user_id' => $owner->id]);
+test('policy nega a utilizador comum criar categoria', function () {
+    $user = User::factory()->create();
 
-    $this->actingAs($intruso);
+    expect($user->cannot('create', Category::class))->toBeTrue();
+});
 
-    expect(fn () => Livewire::test('pages::finance.categories')->call('delete', $category->id))
-        ->toThrow(ModelNotFoundException::class);
+test('policy permite a administrador ou suporte criar categoria', function () {
+    expect(User::factory()->admin()->create()->can('create', Category::class))->toBeTrue()
+        ->and(User::factory()->support()->create()->can('create', Category::class))->toBeTrue();
 });
 
 test('policy nega exclusão de transação alheia', function () {
@@ -28,8 +27,8 @@ test('policy nega exclusão de transação alheia', function () {
 test('listagem de despesas só exibe lançamentos do próprio usuário', function () {
     $user     = User::factory()->create();
     $other    = User::factory()->create();
-    $catUser  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
-    $catOther = Category::factory()->create(['user_id' => $other->id, 'type' => TransactionType::Expense]);
+    $catUser  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
+    $catOther = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
 
     Transaction::factory()->create([
         'user_id'     => $user->id,
@@ -60,7 +59,7 @@ test('página de listagem de despesas responde 200', function () {
 
 test('filtro de status restringe despesas na listagem', function () {
     $user = User::factory()->create();
-    $cat  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $cat  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
     Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $cat->id,
@@ -87,7 +86,7 @@ test('filtro de status restringe despesas na listagem', function () {
 
 test('filtro de status restringe receitas na listagem', function () {
     $user = User::factory()->create();
-    $cat  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $cat  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
     Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $cat->id,
@@ -114,7 +113,7 @@ test('filtro de status restringe receitas na listagem', function () {
 
 test('busca por descrição filtra despesas na listagem', function () {
     $user = User::factory()->create();
-    $cat  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
+    $cat  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
     Transaction::factory()->create([
         'user_id'     => $user->id,
         'category_id' => $cat->id,

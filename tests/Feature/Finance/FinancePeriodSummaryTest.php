@@ -12,7 +12,7 @@ beforeEach(function () {
 test('resume por tipo e status respeita o filtro de mês', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 
@@ -54,8 +54,8 @@ test('resume por tipo e status respeita o filtro de mês', function () {
 
 test('saldo usa receitas recebidas e despesas pagas', function () {
     $user       = User::factory()->create();
-    $catExpense = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
-    $catIncome  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $catExpense = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
+    $catIncome  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
 
     Transaction::factory()->create([
         'user_id'     => $user->id,
@@ -81,9 +81,9 @@ test('saldo usa receitas recebidas e despesas pagas', function () {
 
 test('resumo mostra subtotal de débitos de investimentos nas despesas pagas', function () {
     $user             = User::factory()->create();
-    $catIncome        = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $catIncome        = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
     $catInvestExpense = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
         'name'    => 'Investments',
     ]);
@@ -116,8 +116,8 @@ test('resumo mostra subtotal de débitos de investimentos nas despesas pagas', f
 
 test('saldo ignora despesas pendentes', function () {
     $user       = User::factory()->create();
-    $catExpense = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
-    $catIncome  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $catExpense = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
+    $catIncome  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
 
     Transaction::factory()->create([
         'user_id'     => $user->id,
@@ -143,8 +143,8 @@ test('saldo ignora despesas pendentes', function () {
 
 test('saldo ignora receitas pendentes', function () {
     $user       = User::factory()->create();
-    $catExpense = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Expense]);
-    $catIncome  = Category::factory()->create(['user_id' => $user->id, 'type' => TransactionType::Income]);
+    $catExpense = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Expense]);
+    $catIncome  = Category::factory()->create(['user_id' => null, 'type' => TransactionType::Income]);
 
     Transaction::factory()->create([
         'user_id'     => $user->id,
@@ -179,7 +179,7 @@ test('saldo ignora receitas pendentes', function () {
 test('forPeriod invalida cache quando há nova transação', function () {
     $user     = User::factory()->create();
     $category = Category::factory()->create([
-        'user_id' => $user->id,
+        'user_id' => null,
         'type'    => TransactionType::Expense,
     ]);
 

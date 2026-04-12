@@ -4,7 +4,6 @@ use App\Enums\TransactionType;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -24,13 +23,14 @@ new #[Title('Categories')] class extends Component {
 
     public function mount(): void
     {
+        $this->authorize('viewAny', Category::class);
         $this->type = TransactionType::Expense->value;
     }
 
     #[Computed]
     public function categories()
     {
-        return Auth::user()->categories()->orderBy('name')->get();
+        return Category::query()->platform()->orderBy('name')->get();
     }
 
     public function openCreate(): void
@@ -46,10 +46,7 @@ new #[Title('Categories')] class extends Component {
 
     public function openEdit(int $categoryId): void
     {
-        $category = Category::query()
-            ->whereKey($categoryId)
-            ->whereBelongsTo(Auth::user())
-            ->firstOrFail();
+        $category = Category::query()->whereKey($categoryId)->firstOrFail();
 
         $this->authorize('update', $category);
 
@@ -64,10 +61,7 @@ new #[Title('Categories')] class extends Component {
     public function save(): void
     {
         if ($this->editingId) {
-            $category = Category::query()
-                ->whereKey($this->editingId)
-                ->whereBelongsTo(Auth::user())
-                ->firstOrFail();
+            $category = Category::query()->whereKey($this->editingId)->firstOrFail();
 
             $this->authorize('update', $category);
 
@@ -84,7 +78,8 @@ new #[Title('Categories')] class extends Component {
 
             $this->validate(StoreCategoryRequest::rulesFor($this->type));
 
-            Auth::user()->categories()->create([
+            Category::query()->create([
+                'user_id' => null,
                 'name' => $this->name,
                 'icon' => $this->icon ?: null,
                 'color' => $this->color ?: null,
@@ -98,10 +93,7 @@ new #[Title('Categories')] class extends Component {
 
     public function delete(int $categoryId): void
     {
-        $category = Category::query()
-            ->whereKey($categoryId)
-            ->whereBelongsTo(Auth::user())
-            ->firstOrFail();
+        $category = Category::query()->whereKey($categoryId)->firstOrFail();
 
         $this->authorize('delete', $category);
 
@@ -144,7 +136,7 @@ new #[Title('Categories')] class extends Component {
                                         @if ($category->color)
                                             <span class="size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
                                         @endif
-                                        <span class="truncate">{{ $category->name }}</span>
+                                        <span class="truncate">{{ $category->label() }}</span>
                                     </div>
                                 </div>
                             </td>
@@ -195,7 +187,7 @@ new #[Title('Categories')] class extends Component {
                                                 <span class="size-3 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" style="background-color: {{ $category->color }}"></span>
                                             @endif
                                             <div class="truncate text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                                                {{ $category->name }}
+                                                {{ $category->label() }}
                                             </div>
                                         </div>
                                         <div class="mt-2">
