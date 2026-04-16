@@ -5,8 +5,20 @@ use App\Data\ReplyToTicketData;
 use App\Enums\{TicketStatus, UserRole};
 use App\Models\{Ticket, User};
 use App\Notifications\TicketRepliedNotification;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Support\Facades\Notification;
 use Livewire\Livewire;
+
+test('usuário define idioma preferencial para notificações', function () {
+    $withLocale = User::factory()->create(['locale' => 'pt_BR']);
+    expect($withLocale)->toBeInstanceOf(HasLocalePreference::class)
+        ->and($withLocale->preferredLocale())->toBe('pt_BR');
+
+    $defaultLocale = User::factory()->create(['locale' => null]);
+    config(['app.locale' => 'en']);
+
+    expect($defaultLocale->preferredLocale())->toBe('en');
+});
 
 test('action de resposta envia notificação ao dono do chamado pelos canais database e mail', function () {
     Notification::fake();
